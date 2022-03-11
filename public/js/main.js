@@ -87,6 +87,7 @@ function create() {
                     player.isAttacking = players[id].isAttacking;
                     player.health = players[id].health;
                     player.maxHealth = players[id].maxHealth;
+                    player.isDead = players[id].isDead;
                 }
             });
         });

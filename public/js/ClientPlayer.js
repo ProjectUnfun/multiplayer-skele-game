@@ -18,6 +18,7 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
         // Player hitpoints tracking fields
         this.health = 4;
         this.maxHealth = 4;
+        this.isDead = false;
 
         // Enable physics
         this.scene.physics.world.enable(this);
@@ -40,15 +41,21 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-        this.checkIfPlayerIsAttacking();
+        this.checkDeath();
 
-        // Check for player lack of movement
-        this.checkIfPlayerIsStill();
+        if (this.isDead === false) {
+            // Check for player attack
+            this.checkIfPlayerIsAttacking();
 
-        // Check for player movement
-        this.checkIfPlayerIsMoving();
+            // Check for player lack of movement
+            this.checkIfPlayerIsStill();
 
-        this.updateHealthBar();
+            // Check for player movement
+            this.checkIfPlayerIsMoving();
+
+            // Update player health bar
+            this.updateHealthBar();
+        }
     }
 
     // Method generates movement frames for player walking animations
@@ -227,5 +234,16 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
             (48 * this.health) / this.maxHealth,
             5
         );
+    }
+
+    checkDeath() {
+        if (this.isDead === true) {
+            this.alpha = 0.5;
+            this.healthBar.clear();
+            this.healthBar.fillStyle(0xff0000, 1);
+            this.healthBar.fillRect(this.x - 24, this.y - 36, 48, 5);
+        } else {
+            this.alpha = 1;
+        }
     }
 }

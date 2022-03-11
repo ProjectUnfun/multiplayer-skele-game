@@ -51,33 +51,11 @@ function create() {
         // add player to server
         addPlayer(self, players[socket.id]);
 
-        playersObjects = {};
-        self.players.getChildren().forEach((player) => {
-            playersObjects[player.playerId] = {
-                x: player.x,
-                y: player.y,
-                playerId: player.playerId,
-                direction: player.direction,
-                input: {
-                    left: player.input.left,
-                    right: player.input.right,
-                    up: player.input.up,
-                    down: player.input.down,
-                    space: player.input.space,
-                },
-                isMoving: player.isMoving,
-                isAttacking: player.isAttacking,
-                health: player.health,
-                maxHealth: player.maxHealth,
-            }
-        });
-
-
         // send the players object to the new player
-        socket.emit('currentPlayers', playersObjects);
+        socket.emit('currentPlayers', getPlayersObjects(self));
 
         // update all other players of the new player
-        socket.broadcast.emit('newPlayer', playersObjects[socket.id]);
+        socket.broadcast.emit('newPlayer', getPlayersObjects(self)[socket.id]);
 
         // When a client disconnects from the server
         socket.on('disconnect', () => {
@@ -113,29 +91,8 @@ function update(time) {
         players[player.playerId].isAttacking = player.isAttacking;
     });
 
-    playersObjects = {};
-    this.players.getChildren().forEach((player) => {
-        playersObjects[player.playerId] = {
-            x: player.x,
-            y: player.y,
-            playerId: player.playerId,
-            direction: player.direction,
-            input: {
-                left: player.input.left,
-                right: player.input.right,
-                up: player.input.up,
-                down: player.input.down,
-                space: player.input.space,
-            },
-            isMoving: player.isMoving,
-            isAttacking: player.isAttacking,
-            health: player.health,
-            maxHealth: player.maxHealth,
-        }
-    });
-
     // Emit event to all clients with update player position data
-    io.emit('playerUpdates', playersObjects);
+    io.emit('playerUpdates', getPlayersObjects(this));
 }
 
 // Assign the input received from a client to the appropriate server player
@@ -159,6 +116,32 @@ function removePlayer(self, Id) {
             player.destroy();
         }
     });
+}
+
+// Returns an object that stores the server player data for sending to client
+function getPlayersObjects(self) {
+    const playersObjects = {};
+    self.players.getChildren().forEach((player) => {
+        playersObjects[player.playerId] = {
+            x: player.x,
+            y: player.y,
+            playerId: player.playerId,
+            direction: player.direction,
+            input: {
+                left: player.input.left,
+                right: player.input.right,
+                up: player.input.up,
+                down: player.input.down,
+                space: player.input.space,
+            },
+            isMoving: player.isMoving,
+            isAttacking: player.isAttacking,
+            health: player.health,
+            maxHealth: player.maxHealth,
+            isDead: player.isDead,
+        }
+    });
+    return playersObjects;
 }
 
 const game = new Phaser.Game(config);

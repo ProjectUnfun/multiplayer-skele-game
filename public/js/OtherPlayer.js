@@ -22,6 +22,7 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
         // Player hitpoints tracking fields
         this.health = 4;
         this.maxHealth = 4;
+        this.isDead = false;
 
         // Create monster walk animations
         this.createWalkAnimations();
@@ -37,31 +38,35 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-        // Check which direction player is facing and set animation frame accordingly
-        if (this.isMoving == true) {
-            if (this.direction === 1) {
-                this.anims.play("down", true);
-            } else if (this.direction === 2) {
-                this.anims.play("up", true);
-            } else if (this.direction === 3) {
-                this.anims.play("left", true);
-            } else if (this.direction === 4) {
-                this.anims.play("right", true);
-            }
-        } else {
-            this.anims.stop();
-            if (this.direction === 1) {
-                this.setFrame(7);
-            } else if (this.direction === 2) {
-                this.setFrame(1);
-            } else if (this.direction === 3) {
-                this.setFrame(10);
-            } else if (this.direction === 4) {
-                this.setFrame(4);
-            }
-        }
+        this.checkDeath();
 
-        this.updateHealthBar();
+        if (this.isDead === false) {
+            // Check which direction player is facing and set animation frame accordingly
+            if (this.isMoving == true) {
+                if (this.direction === 1) {
+                    this.anims.play("down", true);
+                } else if (this.direction === 2) {
+                    this.anims.play("up", true);
+                } else if (this.direction === 3) {
+                    this.anims.play("left", true);
+                } else if (this.direction === 4) {
+                    this.anims.play("right", true);
+                }
+            } else {
+                this.anims.stop();
+                if (this.direction === 1) {
+                    this.setFrame(7);
+                } else if (this.direction === 2) {
+                    this.setFrame(1);
+                } else if (this.direction === 3) {
+                    this.setFrame(10);
+                } else if (this.direction === 4) {
+                    this.setFrame(4);
+                }
+            }
+
+            this.updateHealthBar();
+        }
     }
 
     // Method generates movement frames for monster walking animations
@@ -125,5 +130,16 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
             (48 * this.health) / this.maxHealth,
             5
         );
+    }
+
+    checkDeath() {
+        if (this.isDead === true) {
+            this.alpha = 0.5;
+            this.healthBar.clear();
+            this.healthBar.fillStyle(0xff0000, 1);
+            this.healthBar.fillRect(this.x - 24, this.y - 36, 48, 5);
+        } else {
+            this.alpha = 1;
+        }
     }
 }

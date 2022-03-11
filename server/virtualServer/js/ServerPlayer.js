@@ -10,10 +10,17 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         // Directions: down = 1, up = 2, left = 3, right = 4
         this.direction = 1;
 
-        // isMoving tracks player movement
+        // Track when player is moving
         this.isMoving = false;
 
+        // Track when player is attacking
         this.isAttacking = false;
+
+        // Track when player has been killed
+        this.isDead = false;
+
+        // Track if player respawn call has happened
+        this.respawnCalled = false;
 
         // Input tracking fields
         this.input = {
@@ -38,9 +45,30 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
     }
 
     update() {
-        this.checkAttacking();
-        this.body.stop();
-        this.checkMovement();
+        // Check if player has died
+        this.checkDeath();
+
+        // If player is alive, update normally
+        if (this.isDead === false) {
+            this.checkAttacking();
+            this.body.stop();
+            this.checkMovement();
+        } else if (this.respawnCalled === false) {
+            // Wait 5 seconds and respawn
+            this.scene.time.delayedCall(
+                5000,
+                () => {
+                    this.x = Math.floor(Math.random() * 700) + 50;
+                    this.y = Math.floor(Math.random() * 500) + 50;
+                    this.health = this.maxHealth;
+                    this.isDead = false;
+                    this.respawnCalled = false;
+                },
+                [],
+                this
+            );
+            this.respawnCalled = true;
+        }
     }
 
     checkMovement() {
@@ -97,7 +125,7 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         this.hitbox.setActive(false);
 
         // Deactivate hitbox overlap checking
-        this.hitbox.body.onOverlap = false; ``
+        this.hitbox.body.onOverlap = false;
     }
 
     // Method configs defaults for player attacks
@@ -206,6 +234,13 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
                 [],
                 this
             );
+        }
+    }
+
+    // Method handles player death
+    checkDeath() {
+        if (this.health <= 0) {
+            this.isDead = true;
         }
     }
 }
