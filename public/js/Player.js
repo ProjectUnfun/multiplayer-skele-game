@@ -5,7 +5,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.x = x;
         this.y = y;
         this.images = images;
-        this.id = id;
+        this.playerId = id;
 
         // Directions: down = 1, up = 2, left = 3, right = 4
         this.direction = 1;
@@ -13,15 +13,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         // isMoving tracks player movement
         this.isMoving = false;
 
-        // Constant player move speed field (original speed = 160)
-        this.velocity = 160;
-
         // Enable physics
         this.scene.physics.world.enable(this);
 
         // Setup physics body
         this.body.setSize(32, 32);
-        this.body.setOffset(16, 22);
 
         // Create player walk animations
         this.createWalkAnimations();

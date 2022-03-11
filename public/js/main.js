@@ -63,9 +63,9 @@ function create() {
     });
 
     // When the server sends a player disconnection event
-    this.socket.on('disconnection', (playerId) => {
+    this.socket.on('disconnection', (Id) => {
         self.players.getChildren().forEach((player) => {
-            if (playerId === player.playerId) {
+            if (Id === player.playerId) {
                 player.destroy();
             }
         });
@@ -75,7 +75,7 @@ function create() {
     this.socket.on('playerMoveUpdates', (players) => {
         Object.keys(players).forEach((id) => {
             self.players.getChildren().forEach((player) => {
-                if (players[id].playerId === player.id) {
+                if (players[id].playerId === player.playerId) {
                     player.setPosition(players[id].x, players[id].y);
                     player.direction = players[id].direction;
                     player.isMoving = players[id].isMoving;

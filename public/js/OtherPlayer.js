@@ -5,7 +5,7 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
         this.x = x;
         this.y = y;
         this.images = images;
-        this.id = id;
+        this.playerId = id;
 
         // Directions: down = 1, up = 2, left = 3, right = 4
         this.direction = 1;
@@ -18,7 +18,6 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
 
         // Config the physics body
         this.body.setSize(32, 32);
-        this.body.setOffset(8, 28);
 
         // Create monster walk animations
         this.createWalkAnimations();
