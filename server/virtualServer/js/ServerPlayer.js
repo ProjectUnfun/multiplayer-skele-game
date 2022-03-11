@@ -10,6 +10,23 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         // Directions: down = 1, up = 2, left = 3, right = 4
         this.direction = 1;
 
+        // spawn locations array
+        this.spawnLocations = [
+            [352, 480],
+            [800, 608],
+            [1280, 224],
+            [1248, 960],
+            [640, 864],
+            [128, 928],
+            [1024, 96],
+            [1056, 736],
+            [96, 160],
+        ];
+
+        this.spawnLocation = this.getNewSpawn();
+        this.x = this.spawnLocation[0];
+        this.y = this.spawnLocation[1];
+
         // Track when player is moving
         this.isMoving = false;
 
@@ -58,8 +75,9 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             this.scene.time.delayedCall(
                 5000,
                 () => {
-                    this.x = Math.floor(Math.random() * 700) + 50;
-                    this.y = Math.floor(Math.random() * 500) + 50;
+                    let location = this.getNewSpawn();
+                    this.x = location[0];
+                    this.y = location[1];
                     this.health = this.maxHealth;
                     this.isDead = false;
                     this.respawnCalled = false;
@@ -242,5 +260,12 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         if (this.health <= 0) {
             this.isDead = true;
         }
+    }
+
+    // Method returns new spawn location array
+    getNewSpawn() {
+        let index = Math.floor(Math.random() * 9);
+        let location = this.spawnLocations[index];
+        return location;
     }
 }

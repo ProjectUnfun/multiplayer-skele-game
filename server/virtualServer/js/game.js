@@ -61,8 +61,7 @@ function create() {
         console.log(`User: ${socket.id} has connected to the server`);
 
         // create a new player object in the players group
-        players[socket.id] = new ServerPlayer(self, Math.floor(Math.random() * 700) + 50, Math.floor(Math.random() * 500) + 50,
-            'player', socket.id);
+        players[socket.id] = new ServerPlayer(self, 0, 0, 'player', socket.id);
 
         // add player to server
         addPlayer(self, players[socket.id]);
