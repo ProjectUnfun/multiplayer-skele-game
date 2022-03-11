@@ -36,6 +36,10 @@ function preload() {
         frameWidth: 48,
         frameHeight: 64,
     });
+
+    // load tiled map info
+    this.load.image("terrain_atlas", "assets/level/terrain_atlas_extruded.png");
+    this.load.tilemapTiledJSON("map", "assets/level/IterativeMap4.json");
 }
 
 function create() {
@@ -47,6 +51,15 @@ function create() {
 
     // Create a physics group for all players sent by server
     this.players = this.physics.add.group();
+
+    this.map = new Map(
+        this,
+        "map",
+        "terrain_atlas",
+        "Ground",
+        "Blocked",
+        "Deco1"
+    );
 
     // Run the update method of all children objects of the group
     this.players.runChildUpdate = true;
@@ -71,6 +84,7 @@ function create() {
     this.socket.on('disconnection', (Id) => {
         self.players.getChildren().forEach((player) => {
             if (Id === player.playerId) {
+                player.healthBar.destroy();
                 player.destroy();
             }
         });
@@ -115,26 +129,34 @@ function update() {
     // Check for new input status
     if (this.cursors.space.isDown) {
         this.spaceKeyPressed = true;
+        this.leftKeyPressed = false;
+        this.rightKeyPressed = false;
+        this.upKeyPressed = false;
+        this.downKeyPressed = false;
     } else if (this.cursors.left.isDown) {
         this.leftKeyPressed = true;
         this.rightKeyPressed = false;
         this.upKeyPressed = false;
         this.downKeyPressed = false;
+        this.spaceKeyPressed = false;
     } else if (this.cursors.right.isDown) {
         this.rightKeyPressed = true;
         this.leftKeyPressed = false;
         this.upKeyPressed = false;
         this.downKeyPressed = false;
+        this.spaceKeyPressed = false;
     } else if (this.cursors.up.isDown) {
         this.upKeyPressed = true;
         this.leftKeyPressed = false;
         this.rightKeyPressed = false;
         this.downKeyPressed = false;
+        this.spaceKeyPressed = false;
     } else if (this.cursors.down.isDown) {
         this.downKeyPressed = true;
         this.leftKeyPressed = false;
         this.rightKeyPressed = false;
         this.upKeyPressed = false;
+        this.spaceKeyPressed = false;
     } else {
         this.leftKeyPressed = false;
         this.rightKeyPressed = false;

@@ -158,7 +158,7 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
 
     // Method handles player attack hiting monster
     handleEnemyAttacked(hitbox, enemy) {
-        if (this.isAttacking && enemy.canBeAttacked === true) {
+        if (this.isAttacking && enemy.canBeAttacked === true && enemy.playerId !== this.playerId) {
             // Make enemy unattackable to prevent multiple hits in quick succession
             enemy.stopAttackable();
 
@@ -167,7 +167,7 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
 
             // Delay player attack repetition by .3 seconds
             this.scene.time.delayedCall(
-                300,
+                600,
                 () => {
                     enemy.startAttackable();
                 },
@@ -202,15 +202,15 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             // Check direction & assign hitbox coord values
             if (this.direction === 1) {
                 this.hitboxLocation.x = this.x;
-                this.hitboxLocation.y = this.y + 33;
+                this.hitboxLocation.y = this.y + 24;
             } else if (this.direction === 2) {
                 this.hitboxLocation.x = this.x;
-                this.hitboxLocation.y = this.y - 33;
+                this.hitboxLocation.y = this.y - 16;
             } else if (this.direction === 3) {
-                this.hitboxLocation.x = this.x - 33;
+                this.hitboxLocation.x = this.x - 16;
                 this.hitboxLocation.y = this.y + 6;
             } else if (this.direction === 4) {
-                this.hitboxLocation.x = this.x + 33;
+                this.hitboxLocation.x = this.x + 16;
                 this.hitboxLocation.y = this.y + 6;
             }
 

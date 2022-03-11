@@ -31,6 +31,10 @@ function preload() {
 
     // load a 32 x 32 image to be used as player attack physics body
     this.load.image('attackBox', 'assets/hitboxFrame.png');
+
+    // load tiled map info
+    this.load.image("terrain_atlas", "assets/level/terrain_atlas.png");
+    this.load.tilemapTiledJSON("map", "assets/level/IterativeMap4.json");
 }
 
 function create() {
@@ -39,6 +43,18 @@ function create() {
 
     // Create a physics group for all connected players
     this.players = this.physics.add.group();
+
+    this.map = new Map(
+        this,
+        "map",
+        "terrain_atlas",
+        "Ground",
+        "Blocked",
+        "Deco1"
+    );
+
+    // Players vs map blocked layer
+    this.physics.add.collider(this.players, this.map.blockedLayer);
 
     // When a client connects to the server
     io.on('connection', (socket) => {

@@ -36,6 +36,9 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
         // Set the default animation frame
         this.setFrame(18);
 
+        // Make the game camera follow the player container
+        this.scene.cameras.main.startFollow(this);
+
         // Add player to scene
         this.scene.add.existing(this);
     }
@@ -200,7 +203,6 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
     checkIfPlayerIsAttacking() {
         if (this.isAttacking) {
             // Stop current animation and movement, alter attacking flag
-            this.anims.stop();
             this.body.setVelocity(0);
 
             // Check direction; play animation and assign hitbox coord values
