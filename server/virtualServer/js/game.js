@@ -45,7 +45,7 @@ function create() {
         console.log(`User: ${socket.id} has connected to the server`);
 
         // create a new player object in the players group
-        players[socket.id] = new Player(self, Math.floor(Math.random() * 700) + 50, Math.floor(Math.random() * 500) + 50,
+        players[socket.id] = new ServerPlayer(self, Math.floor(Math.random() * 700) + 50, Math.floor(Math.random() * 500) + 50,
             'player', socket.id);
 
         // add player to server
@@ -63,8 +63,12 @@ function create() {
                     right: player.input.right,
                     up: player.input.up,
                     down: player.input.down,
+                    space: player.input.space,
                 },
                 isMoving: player.isMoving,
+                isAttacking: player.isAttacking,
+                health: player.health,
+                maxHealth: player.maxHealth,
             }
         });
 
@@ -96,16 +100,17 @@ function create() {
     });
 }
 
-function update() {
+function update(time) {
     this.players.getChildren().forEach((player) => {
         // update player
         players[player.playerId].update();
 
-        // Update player location & direction fields
+        // Update player data
         players[player.playerId].x = player.x;
         players[player.playerId].y = player.y;
         players[player.playerId].direction = player.direction;
         players[player.playerId].isMoving = player.isMoving;
+        players[player.playerId].isAttacking = player.isAttacking;
     });
 
     playersObjects = {};
@@ -120,13 +125,17 @@ function update() {
                 right: player.input.right,
                 up: player.input.up,
                 down: player.input.down,
+                space: player.input.space,
             },
             isMoving: player.isMoving,
+            isAttacking: player.isAttacking,
+            health: player.health,
+            maxHealth: player.maxHealth,
         }
     });
 
     // Emit event to all clients with update player position data
-    io.emit('playerMoveUpdates', playersObjects);
+    io.emit('playerUpdates', playersObjects);
 }
 
 // Assign the input received from a client to the appropriate server player

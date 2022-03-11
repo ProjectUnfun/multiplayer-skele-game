@@ -6,7 +6,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: false,
+            debug: true,
             gravity: { y: 0 }
         }
     },
@@ -21,7 +21,12 @@ var game = new Phaser.Game(config);
 
 function preload() {
     // Load player movement spritesheet
-    this.load.spritesheet("playerWalk", "../assets/WalkLPC.png", {
+    this.load.spritesheet("playerWalk", "/assets/WalkLPC.png", {
+        frameWidth: 64,
+        frameHeight: 64,
+    });
+
+    this.load.spritesheet("playerAttack", "assets/HammerLPC.png", {
         frameWidth: 64,
         frameHeight: 64,
     });
@@ -72,13 +77,16 @@ function create() {
     });
 
     // When the server sends player position update event
-    this.socket.on('playerMoveUpdates', (players) => {
+    this.socket.on('playerUpdates', (players) => {
         Object.keys(players).forEach((id) => {
             self.players.getChildren().forEach((player) => {
                 if (players[id].playerId === player.playerId) {
                     player.setPosition(players[id].x, players[id].y);
                     player.direction = players[id].direction;
                     player.isMoving = players[id].isMoving;
+                    player.isAttacking = players[id].isAttacking;
+                    player.health = players[id].health;
+                    player.maxHealth = players[id].maxHealth;
                 }
             });
         });
@@ -92,6 +100,7 @@ function create() {
     this.rightKeyPressed = false;
     this.upKeyPressed = false;
     this.downKeyPressed = false;
+    this.spaceKeyPressed = false;
 }
 
 function update() {
@@ -100,9 +109,12 @@ function update() {
     const right = this.rightKeyPressed;
     const up = this.upKeyPressed;
     const down = this.downKeyPressed;
+    const space = this.spaceKeyPressed;
 
     // Check for new input status
-    if (this.cursors.left.isDown) {
+    if (this.cursors.space.isDown) {
+        this.spaceKeyPressed = true;
+    } else if (this.cursors.left.isDown) {
         this.leftKeyPressed = true;
         this.rightKeyPressed = false;
         this.upKeyPressed = false;
@@ -127,19 +139,22 @@ function update() {
         this.rightKeyPressed = false;
         this.upKeyPressed = false;
         this.downKeyPressed = false;
+        this.spaceKeyPressed = false;
     }
 
     // When the input status has changed, send new input status to server
-    if (left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed || down !== this.downKeyPressed) {
+    if (left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed ||
+        down !== this.downKeyPressed || space !== this.spaceKeyPressed) {
         this.socket.emit('playerInput', {
-            left: this.leftKeyPressed, right: this.rightKeyPressed, up: this.upKeyPressed, down: this.downKeyPressed
+            left: this.leftKeyPressed, right: this.rightKeyPressed, up: this.upKeyPressed, down: this.downKeyPressed,
+            space: this.spaceKeyPressed
         });
     }
 }
 
 // Set up the user player
 function addUserPlayer(self, playerInfo, sprite) {
-    const player = new Player(self, playerInfo.x, playerInfo.y, sprite, playerInfo.playerId);
+    const player = new ClientPlayer(self, playerInfo.x, playerInfo.y, sprite, playerInfo.playerId);
     self.players.add(player);
 }
 
