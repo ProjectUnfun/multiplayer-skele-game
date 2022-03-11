@@ -19,8 +19,15 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
         // Config the physics body
         this.body.setSize(32, 32);
 
+        // Player hitpoints tracking fields
+        this.health = 4;
+        this.maxHealth = 4;
+
         // Create monster walk animations
         this.createWalkAnimations();
+
+        // Create health bar
+        this.createHealthBar();
 
         // Set the default animation frame
         this.setFrame(6);
@@ -53,6 +60,8 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
                 this.setFrame(4);
             }
         }
+
+        this.updateHealthBar();
     }
 
     // Method generates movement frames for monster walking animations
@@ -96,5 +105,25 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
             frameRate: 10,
             repeat: -1,
         });
+    }
+
+    // Method creates the player health bar
+    createHealthBar() {
+        this.healthBar = this.scene.add.graphics();
+        this.updateHealthBar();
+    }
+
+    // Method updates the location and fullness of player health bar
+    updateHealthBar() {
+        this.healthBar.clear();
+        this.healthBar.fillStyle(0xffffff, 1);
+        this.healthBar.fillRect(this.x - 24, this.y - 36, 48, 5);
+        this.healthBar.fillGradientStyle(0x00ff00, 0x00ff00, 4);
+        this.healthBar.fillRect(
+            this.x - 24,
+            this.y - 36,
+            (48 * this.health) / this.maxHealth,
+            5
+        );
     }
 }
