@@ -112,6 +112,8 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
     checkDeath() {
         if (this.health <= 0) {
             this.isDead = true;
+            this.body.setVelocity(0);
+            this.isMoving = false;
         }
     }
 

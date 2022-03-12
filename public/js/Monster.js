@@ -99,10 +99,10 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
         });
 
         this.anims.create({
-            key: "right",
+            key: "left",
             frames: this.anims.generateFrameNumbers("monsterWalk", {
-                start: 27,
-                end: 35,
+                start: 9,
+                end: 17,
             }),
             frameRate: rateOfFrames,
             repeat: repeatValue,
@@ -119,10 +119,10 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
         });
 
         this.anims.create({
-            key: "left",
+            key: "right",
             frames: this.anims.generateFrameNumbers("monsterWalk", {
-                start: 9,
-                end: 17,
+                start: 27,
+                end: 35,
             }),
             frameRate: rateOfFrames,
             repeat: repeatValue,
