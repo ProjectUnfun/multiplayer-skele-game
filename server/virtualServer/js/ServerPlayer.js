@@ -214,6 +214,12 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             // Update enemy health
             enemy.updateHealth(this.attackValue);
 
+            // Update player health on monster kill
+            let enemyHealth = enemy.getHealth();
+            if (enemyHealth < 1) {
+                this.health += 1;
+            }
+
             // Enable player attack repitition on this target after .6 seconds
             this.scene.time.delayedCall(
                 600,
@@ -290,6 +296,8 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
     checkDeath() {
         if (this.health <= 0) {
             this.isDead = true;
+            this.body.setVelocity(0);
+            this.isMoving = false;
         }
     }
 

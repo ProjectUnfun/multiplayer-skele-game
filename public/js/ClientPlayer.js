@@ -53,6 +53,8 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
             this.checkIfPlayerIsStill();
             this.checkIfPlayerIsMoving();
             this.updateHealthBar();
+        } else {
+            this.anims.stop();
         }
     }
 

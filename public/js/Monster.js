@@ -44,41 +44,53 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
 
         // Handle movement animations & update health bar if monster is alive
         if (this.isDead === false) {
-            if (this.isMoving == true) {
-                if (this.direction === 1) {
-                    this.anims.play("down", true);
-                } else if (this.direction === 2) {
-                    this.anims.play("up", true);
-                } else if (this.direction === 3) {
-                    this.anims.play("left", true);
-                } else if (this.direction === 4) {
-                    this.anims.play("right", true);
-                }
-            } else {
-                this.anims.stop();
-                if (this.direction === 1) {
-                    this.setFrame(7);
-                } else if (this.direction === 2) {
-                    this.setFrame(1);
-                } else if (this.direction === 3) {
-                    this.setFrame(10);
-                } else if (this.direction === 4) {
-                    this.setFrame(4);
-                }
-            }
-
+            this.checkStill();
+            this.checkMovement();
             this.updateHealthBar();
         } else {
-            // Stop monster while dead
             this.anims.stop();
+        }
+    }
+
+    // Handle movement animations
+    checkMovement() {
+        if (this.isMoving) {
             if (this.direction === 1) {
-                this.setFrame(7);
+                this.anims.play("down", true);
             } else if (this.direction === 2) {
-                this.setFrame(1);
+                this.anims.play("up", true);
             } else if (this.direction === 3) {
-                this.setFrame(10);
+                this.anims.play("left", true);
             } else if (this.direction === 4) {
-                this.setFrame(4);
+                this.anims.play("right", true);
+            }
+        }
+    }
+
+    // Method checks if monster is not moving or attacking and sets animation frame
+    checkStill() {
+        // If none of the cursors are being pressed, and the monster is not attacking
+        if (this.isMoving === false && this.isAttacking === false) {
+            // Stop animations
+            this.anims.stop();
+
+            // Check which direction monster is facing and set animation frame accordingly
+            if (this.direction === 1) {
+                this.anims.play("down", true);
+                this.anims.stop();
+                this.setFrame(18);
+            } else if (this.direction === 2) {
+                this.anims.play("up", true);
+                this.anims.stop();
+                this.setFrame(0);
+            } else if (this.direction === 3) {
+                this.anims.play("left", true);
+                this.anims.stop();
+                this.setFrame(9);
+            } else if (this.direction === 4) {
+                this.anims.play("right", true);
+                this.anims.stop();
+                this.setFrame(27);
             }
         }
     }

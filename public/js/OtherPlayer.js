@@ -48,6 +48,8 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
             this.checkStill();
             this.checkMovement();
             this.updateHealthBar();
+        } else {
+            this.anims.stop();
         }
     }
 
@@ -182,7 +184,7 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    // Method checks if monster is not moving or attacking and sets animation frame
+    // Method checks if player is not moving or attacking and sets animation frame
     checkStill() {
         // If none of the cursors are being pressed, and the player is not attacking
         if (this.isMoving === false && this.isAttacking === false) {
