@@ -64,7 +64,8 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
         } else {
             let option = Math.floor(Math.random() * 5);
             this.movement(option);
-            this.stepCount = this.maxStepCount;
+            this.stepCount = Math.floor(Math.random() * this.maxStepCount);
+            console.log(`Monster step count after randomization = ${this.stepCount}`);
         }
     }
 
@@ -73,21 +74,25 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
         // Check which option is given
         if (movementOption === 0) {
             this.body.setVelocityX(-playerVelocity);
+            this.body.setVelocityY(0);
             this.direction = 3;
             this.isMoving = true;
             this.reduceStepCount = true;
         } else if (movementOption === 1) {
             this.body.setVelocityX(playerVelocity);
+            this.body.setVelocityY(0);
             this.direction = 4;
             this.isMoving = true;
             this.reduceStepCount = true;
         } else if (movementOption === 2) {
             this.body.setVelocityY(-playerVelocity);
+            this.body.setVelocityX(0);
             this.direction = 2;
             this.isMoving = true;
             this.reduceStepCount = true;
         } else if (movementOption === 3) {
             this.body.setVelocityY(playerVelocity);
+            this.body.setVelocityX(0);
             this.direction = 1;
             this.isMoving = true;
             this.reduceStepCount = true;
