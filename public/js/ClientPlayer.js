@@ -240,7 +240,7 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
             this.healthBar.clear();
             this.healthBar.fillStyle(0xff0000, 1);
             this.healthBar.fillRect(this.x - 24, this.y - 36, 48, 5);
-        } else {
+        } else if (this.alpha !== 1) {
             this.alpha = 1;
         }
     }

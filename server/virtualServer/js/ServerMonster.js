@@ -113,7 +113,7 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
     }
 
     handleAttack(monster, player) {
-        if (player.canBeAttacked === true && this.isAttacking === false) {
+        if (player.canBeAttacked === true && this.isAttacking === false && this.isDead === false) {
             // Stop movement, alter attacking flag
             this.body.setVelocity(0);
             this.isAttacking = true;

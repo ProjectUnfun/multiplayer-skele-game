@@ -310,6 +310,9 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             this.isDead = true;
             this.body.setVelocity(0);
             this.isMoving = false;
+            this.canBeAttacked = false;
+        } else if (this.canBeAttacked === false) {
+            this.canBeAttacked = true;
         }
     }
 
