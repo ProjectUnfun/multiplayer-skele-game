@@ -76,6 +76,7 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
                     this.health = this.maxHealth;
                     this.isDead = false;
                     this.respawnCalled = false;
+                    this.canBeAttacked = true;
                 },
                 [],
                 this
@@ -158,6 +159,7 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
             this.isDead = true;
             this.body.setVelocity(0);
             this.isMoving = false;
+            this.canBeAttacked = false;
         }
     }
 
