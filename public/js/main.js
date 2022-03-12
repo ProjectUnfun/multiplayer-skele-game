@@ -32,8 +32,14 @@ function preload() {
     });
 
     // Load opponent movement spritesheet
-    this.load.spritesheet("monsterWalk", "assets/Observer.png", {
-        frameWidth: 48,
+    this.load.spritesheet("monsterWalk", "assets/SkeleWalk.png", {
+        frameWidth: 64,
+        frameHeight: 64,
+    });
+
+    // Load opponent attack spritesheet
+    this.load.spritesheet("monsterAttack", "assets/SkeleAttack.png", {
+        frameWidth: 64,
         frameHeight: 64,
     });
 

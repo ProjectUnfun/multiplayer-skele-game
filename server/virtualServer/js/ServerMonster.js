@@ -84,6 +84,7 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
     configMonsterDamage() {
         // Config physics body
         this.body.setSize(32, 32);
+        this.body.setOffset(16, 22);
 
         // Monster attackable state
         this.canBeAttacked = true;

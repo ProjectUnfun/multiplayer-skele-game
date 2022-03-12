@@ -11,7 +11,7 @@ const playerVelocity = 160;
 let monsterIdNumber = 0;
 
 // Track number of monsters
-const numberOfMonsters = 25;
+const numberOfMonsters = 0;
 
 // Phaser config object
 const config = {

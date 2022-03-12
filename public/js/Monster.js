@@ -18,6 +18,7 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
 
         // Config the physics body
         this.body.setSize(32, 32);
+        this.body.setOffset(16, 22);
 
         // Config health fields
         this.health = 3;
@@ -84,44 +85,47 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
 
     // Method generates movement frames for monster walking animations
     createWalkAnimations() {
+        let rateOfFrames = 15;
+        let repeatValue = 0;
+
         this.anims.create({
             key: "up",
             frames: this.anims.generateFrameNumbers("monsterWalk", {
                 start: 0,
-                end: 2,
+                end: 8,
             }),
-            frameRate: 10,
-            repeat: -1,
+            frameRate: rateOfFrames,
+            repeat: repeatValue,
         });
 
         this.anims.create({
             key: "right",
             frames: this.anims.generateFrameNumbers("monsterWalk", {
-                start: 3,
-                end: 5,
+                start: 27,
+                end: 35,
             }),
-            frameRate: 10,
-            repeat: -1,
+            frameRate: rateOfFrames,
+            repeat: repeatValue,
         });
 
         this.anims.create({
             key: "down",
             frames: this.anims.generateFrameNumbers("monsterWalk", {
-                start: 6,
-                end: 8,
+                start: 18,
+                end: 26,
             }),
-            frameRate: 10,
-            repeat: -1,
+            frameRate: rateOfFrames,
+            repeat: repeatValue,
         });
 
         this.anims.create({
             key: "left",
             frames: this.anims.generateFrameNumbers("monsterWalk", {
                 start: 9,
-                end: 11,
+                end: 17,
             }),
-            frameRate: 10,
-            repeat: -1,
+            frameRate: rateOfFrames,
+            repeat: repeatValue,
         });
     }
 

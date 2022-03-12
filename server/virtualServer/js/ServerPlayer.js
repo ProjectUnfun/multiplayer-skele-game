@@ -121,6 +121,7 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
     // Method configs player damage taking fields
     configPlayerDamage() {
         this.body.setSize(32, 32);
+        this.body.setOffset(16, 22);
         this.canBeAttacked = true;
 
         // Player hitpoints tracking fields

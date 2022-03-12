@@ -25,6 +25,7 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
 
         // Setup physics body
         this.body.setSize(32, 32);
+        this.body.setOffset(16, 22);
 
         // Create player animations
         this.createWalkAnimations();
@@ -46,17 +47,11 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
     update() {
         this.checkDeath();
 
+        // If player is alive, run update methods
         if (this.isDead === false) {
-            // Check for player attack
             this.checkIfPlayerIsAttacking();
-
-            // Check for player lack of movement
             this.checkIfPlayerIsStill();
-
-            // Check for player movement
             this.checkIfPlayerIsMoving();
-
-            // Update player health bar
             this.updateHealthBar();
         }
     }
@@ -107,7 +102,7 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
-    // Method generates striking frames for monster attacking animations
+    // Method generates striking frames for player attacking animations
     createAttackAnimations() {
         let rateOfFrames = 20;
         let repeatValue = 0;
@@ -160,7 +155,7 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
     // Method checks if player is not moving or attacking and sets animation frame
     checkIfPlayerIsStill() {
         // If none of the cursors are being pressed, and the player is not attacking
-        if (this.isMoving == false && this.isAttacking == false) {
+        if (this.isMoving === false && this.isAttacking === false) {
             // Stop animations
             this.anims.stop();
 
@@ -187,7 +182,7 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
 
     // Method checks if player moving and plays corresponding animation
     checkIfPlayerIsMoving() {
-        if (this.isMoving && this.isAttacking === false) {
+        if (this.isMoving === true && this.isAttacking === false) {
             if (this.direction === 3) {
                 this.anims.play("walkLeft", true);
             } else if (this.direction === 4) {
@@ -202,10 +197,7 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
 
     checkIfPlayerIsAttacking() {
         if (this.isAttacking) {
-            // Stop current animation and movement, alter attacking flag
-            this.body.setVelocity(0);
-
-            // Check direction; play animation and assign hitbox coord values
+            // Check direction; play animation
             if (this.direction === 1) {
                 this.anims.play("attackDown", true);
             } else if (this.direction === 2) {
