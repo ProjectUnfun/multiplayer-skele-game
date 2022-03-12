@@ -34,6 +34,9 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
         // Track player movement option processing
         this.reduceStepCount = false;
 
+        // Track respawn functionality calls
+        this.respawnCalled = false;
+
         // Track player death status
         this.isDead = false;
 
@@ -52,10 +55,28 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
     }
 
     update() {
+        // Check for monster death
         this.checkDeath();
 
+        // Update monster if alive, or call respawn if respawn not already called
         if (this.isDead === false) {
             this.checkMovement();
+        } else if (this.respawnCalled === false) {
+            // Wait 5 seconds and respawn
+            this.scene.time.delayedCall(
+                5000,
+                () => {
+                    let location = this.getNewSpawn();
+                    this.x = location[0];
+                    this.y = location[1];
+                    this.health = this.maxHealth;
+                    this.isDead = false;
+                    this.respawnCalled = false;
+                },
+                [],
+                this
+            );
+            this.respawnCalled = true;
         }
     }
 
@@ -63,7 +84,6 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
     configMonsterDamage() {
         // Config physics body
         this.body.setSize(32, 32);
-        this.body.setOffset(8, 28);
 
         // Monster attackable state
         this.canBeAttacked = true;

@@ -18,7 +18,6 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
 
         // Config the physics body
         this.body.setSize(32, 32);
-        this.body.setOffset(8, 28);
 
         // Config health fields
         this.health = 3;
@@ -39,10 +38,11 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
+        // Check if monster has died
         this.checkDeath();
 
+        // Handle movement animations & update health bar if monster is alive
         if (this.isDead === false) {
-            // Check which direction player is facing and set animation frame accordingly
             if (this.isMoving == true) {
                 if (this.direction === 1) {
                     this.anims.play("down", true);
@@ -68,6 +68,7 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
 
             this.updateHealthBar();
         } else {
+            // Stop monster while dead
             this.anims.stop();
             if (this.direction === 1) {
                 this.setFrame(7);
@@ -144,6 +145,7 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
         );
     }
 
+    // Cheif monster has died, change opacity accordingly
     checkDeath() {
         if (this.isDead === true) {
             this.alpha = 0.5;
