@@ -126,6 +126,9 @@ function create() {
                     monster.setPosition(monsters[id].x, monsters[id].y);
                     monster.direction = monsters[id].direction;
                     monster.isMoving = monsters[id].isMoving;
+                    monster.health = monsters[id].health;
+                    monster.maxHealth = monsters[id].maxHealth;
+                    monster.isDead = monsters[id].isDead;
                 }
             });
         });

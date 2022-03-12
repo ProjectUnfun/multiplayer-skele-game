@@ -34,12 +34,14 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
         // Track player movement option processing
         this.reduceStepCount = false;
 
+        // Track player death status
+        this.isDead = false;
+
         // Enable physics
         this.scene.physics.world.enable(this);
 
-        // Config physics body
-        this.body.setSize(32, 32);
-        this.body.setOffset(8, 28);
+        // Config damage taking
+        this.configMonsterDamage();
 
         // Track movement processing
         this.stepCount = 64;
@@ -50,7 +52,46 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
     }
 
     update() {
-        this.checkMovement();
+        this.checkDeath();
+
+        if (this.isDead === false) {
+            this.checkMovement();
+        }
+    }
+
+    // Method configs monster damage taking fields
+    configMonsterDamage() {
+        // Config physics body
+        this.body.setSize(32, 32);
+        this.body.setOffset(8, 28);
+
+        // Monster attackable state
+        this.canBeAttacked = true;
+
+        // Monster hitpoints tracking fields
+        this.health = 3;
+        this.maxHealth = 3;
+    }
+
+    stopAttackable() {
+        this.canBeAttacked = false;
+    }
+
+    startAttackable() {
+        this.canBeAttacked = true;
+    }
+
+    // Method updates the monster health value when attacked
+    updateHealth(damage) {
+        this.health -= damage;
+        console.log(`Monster: ${this.monsterId} has been damaged`);
+    }
+
+    // Method handles player death
+    checkDeath() {
+        if (this.health <= 0) {
+            this.isDead = true;
+        }
     }
 
     // Method determines monster movement
@@ -65,7 +106,6 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
             let option = Math.floor(Math.random() * 5);
             this.movement(option);
             this.stepCount = Math.floor(Math.random() * this.maxStepCount);
-            console.log(`Monster step count after randomization = ${this.stepCount}`);
         }
     }
 

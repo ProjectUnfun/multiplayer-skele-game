@@ -217,6 +217,9 @@ function getMonstersObjects(self) {
             monsterId: monster.monsterId,
             direction: monster.direction,
             isMoving: monster.isMoving,
+            health: monster.health,
+            maxHealth: monster.maxHealth,
+            isDead: monster.isDead,
         }
     });
     return monstersObjects;

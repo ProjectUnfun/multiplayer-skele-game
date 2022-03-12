@@ -164,7 +164,7 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         // Deactivate default hitbox
         this.makeHitboxInactive();
 
-        // Player hitbox vs monsters overlap method call
+        // Player hitbox vs other players overlap method call
         this.scene.physics.add.overlap(
             this.hitbox,
             this.scene.players,
@@ -172,9 +172,18 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             undefined,
             this
         );
+
+        // Player hitbox overlap for player vs monsters
+        this.scene.physics.add.overlap(
+            this.hitbox,
+            this.scene.monsters,
+            this.handleMonsterAttacked,
+            undefined,
+            this
+        )
     }
 
-    // Method handles player attack hiting monster
+    // Method handles player attack hiting other player
     handleEnemyAttacked(hitbox, enemy) {
         if (this.isAttacking && enemy.canBeAttacked === true && enemy.playerId !== this.playerId) {
             // Make enemy unattackable to prevent multiple hits in quick succession
@@ -183,7 +192,28 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             // Update enemy health
             enemy.updateHealth(this.attackValue);
 
-            // Delay player attack repetition by .3 seconds
+            // Enable player attack repetition after .6 seconds
+            this.scene.time.delayedCall(
+                600,
+                () => {
+                    enemy.startAttackable();
+                },
+                [],
+                this
+            );
+        }
+    }
+
+    // Method handles player attacking hiting monster
+    handleMonsterAttacked(hitbox, enemy) {
+        if (this.isAttacking && enemy.canBeAttacked === true) {
+            // Prevent multiple hits in quick succession
+            enemy.stopAttackable();
+
+            // Update enemy health
+            enemy.updateHealth(this.attackValue);
+
+            // Enable player attack repitition on this target after .6 seconds
             this.scene.time.delayedCall(
                 600,
                 () => {
