@@ -5,12 +5,12 @@ const players = {};
 const monsters = {};
 
 // Field stores movement speed (original value = 160)
-const playerVelocity = 200;
+const playerVelocity = 260;
 
 // Field stores monster ID numbers
 let monsterIdNumber = 0;
 
-// Controls the number of monsters spawned by server
+// Track number of monsters
 const numberOfMonsters = 7;
 
 // Phaser config object
