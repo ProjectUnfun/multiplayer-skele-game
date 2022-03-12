@@ -43,8 +43,9 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
         // Enable physics
         this.scene.physics.world.enable(this);
 
-        // Config damage taking
+        // Config damages
         this.configMonsterDamage();
+        this.configMonsterAttack();
 
         // Track movement processing
         this.stepCount = 64;
@@ -92,6 +93,42 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
         // Monster hitpoints tracking fields
         this.health = 3;
         this.maxHealth = 3;
+    }
+
+    // Method configs monster damaging player fields
+    configMonsterAttack() {
+        // Config monster attack value
+        this.attackValue = 1;
+
+        // Create overlap event for monster vs player
+        this.scene.physics.add.overlap(
+            this,
+            this.scene.players,
+            this.handleAttack,
+            undefined,
+            this
+        );
+    }
+
+    // Method handles player attack hiting other player
+    handleAttack(this, enemy) {
+        if (enemy.canBeAttacked === true) {
+            // Make enemy unattackable to prevent multiple hits in quick succession
+            enemy.stopAttackable();
+
+            // Update enemy health
+            enemy.updateHealth(this.attackValue);
+
+            // Enable monster attack repetition after .6 seconds
+            this.scene.time.delayedCall(
+                600,
+                () => {
+                    enemy.startAttackable();
+                },
+                [],
+                this
+            );
+        }
     }
 
     stopAttackable() {
