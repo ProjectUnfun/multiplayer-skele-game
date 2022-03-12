@@ -52,6 +52,9 @@ function create() {
     // Create a physics group for all players sent by server
     this.players = this.physics.add.group();
 
+    // Create a physics group for all monsters sent by server
+    this.monsters = this.physics.add.group();
+
     this.map = new Map(
         this,
         "map",
@@ -61,8 +64,9 @@ function create() {
         "Deco1"
     );
 
-    // Run the update method of all children objects of the group
+    // Run the update method of all children objects of the groups
     this.players.runChildUpdate = true;
+    this.monsters.runChildUpdate = true;
 
     // When the server sends the collection of connected players
     this.socket.on('currentPlayers', (players) => {
@@ -72,6 +76,13 @@ function create() {
             } else {
                 addOtherPlayers(self, players[id], 'monsterWalk');
             }
+        });
+    });
+
+    // When the server send the collection of spawned monsters
+    this.socket.on('currentMonsters', (monsters) => {
+        Object.keys(monsters).forEach((id) => {
+            addMonster(self, monsters[id], 'monsterWalk');
         });
     });
 
@@ -90,7 +101,7 @@ function create() {
         });
     });
 
-    // When the server sends player position update event
+    // When the server sends player data update event
     this.socket.on('playerUpdates', (players) => {
         Object.keys(players).forEach((id) => {
             self.players.getChildren().forEach((player) => {
@@ -102,6 +113,19 @@ function create() {
                     player.health = players[id].health;
                     player.maxHealth = players[id].maxHealth;
                     player.isDead = players[id].isDead;
+                }
+            });
+        });
+    });
+
+    // When the server sends monster data update event
+    this.socket.on('monsterUpdates', (monsters) => {
+        Object.keys(monsters).forEach((id) => {
+            self.monsters.getChildren().forEach((monster) => {
+                if (monsters[id].monsterId === monster.monsterId) {
+                    monster.setPosition(monsters[id].x, monsters[id].y);
+                    monster.direction = monsters[id].direction;
+                    monster.isMoving = monsters[id].isMoving;
                 }
             });
         });
@@ -185,4 +209,10 @@ function addUserPlayer(self, playerInfo, sprite) {
 function addOtherPlayers(self, playerInfo, sprite) {
     const otherPlayer = new OtherPlayer(self, playerInfo.x, playerInfo.y, sprite, playerInfo.playerId);
     self.players.add(otherPlayer);
+}
+
+// Set up monsters
+function addMonster(self, monsterInfo, sprite) {
+    const monster = new Monster(self, monsterInfo.x, monsterInfo.y, sprite, monsterInfo.monsterId);
+    self.monsters.add(monster);
 }

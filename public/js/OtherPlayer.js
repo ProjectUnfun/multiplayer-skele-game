@@ -31,7 +31,7 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
         this.createHealthBar();
 
         // Set the default animation frame
-        this.setFrame(6);
+        this.setFrame(7);
 
         // Add the monster to the scene
         this.scene.add.existing(this);
