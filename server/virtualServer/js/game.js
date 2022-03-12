@@ -139,9 +139,8 @@ function update() {
         monsters[monster.monsterId].y = monster.y;
         monsters[monster.monsterId].direction = monster.direction;
         monsters[monster.monsterId].isMoving = monster.isMoving;
+        monsters[monster.monsterId].isAttacking = monster.isAttacking;
     });
-
-    // TODO: Will need to check if all monsters are dead and spawn more here
 
     // Emit event to all clients with update player data
     io.emit('playerUpdates', getPlayersObjects(this));
@@ -219,6 +218,7 @@ function getMonstersObjects(self) {
             health: monster.health,
             maxHealth: monster.maxHealth,
             isDead: monster.isDead,
+            isAttacking: monster.isAttacking,
         }
     });
     return monstersObjects;

@@ -10,12 +10,13 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
         // Directions: down = 1, up = 2, left = 3, right = 4
         this.direction = 1;
 
-        // isMoving tracks player movement
+        // Track movement status
         this.isMoving = false;
 
+        // Track attack status
         this.isAttacking = false;
 
-        // Player hitpoints tracking fields
+        // Track health and death status
         this.health = 4;
         this.maxHealth = 4;
         this.isDead = false;
@@ -54,6 +55,7 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
             this.checkIfPlayerIsMoving();
             this.updateHealthBar();
         } else {
+            // Stop all animations on death
             this.anims.stop();
         }
     }

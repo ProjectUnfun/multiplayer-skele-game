@@ -10,7 +10,7 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
         // Directions: down = 1, up = 2, left = 3, right = 4
         this.direction = 1;
 
-        // isMoving tracks player movement
+        // Track movement status
         this.isMoving = false;
 
         // Enable physics
@@ -20,7 +20,7 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
         this.body.setSize(32, 32);
         this.body.setOffset(16, 22);
 
-        // Player hitpoints tracking fields
+        // Track health and death status
         this.health = 4;
         this.maxHealth = 4;
         this.isDead = false;
@@ -49,6 +49,7 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
             this.checkMovement();
             this.updateHealthBar();
         } else {
+            // Stop all animations on death
             this.anims.stop();
         }
     }

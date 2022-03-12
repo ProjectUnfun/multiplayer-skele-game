@@ -31,6 +31,9 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
         // Track when player is moving
         this.isMoving = false;
 
+        // Track when monster is attacking
+        this.isAttacking = false;
+
         // Track player movement option processing
         this.reduceStepCount = false;
 
@@ -110,18 +113,24 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
     }
 
     handleAttack(monster, player) {
-        if (player.canBeAttacked === true) {
+        if (player.canBeAttacked === true && this.isAttacking === false) {
+            // Stop movement, alter attacking flag
+            this.body.setVelocity(0);
+            this.isAttacking = true;
+
             // Make enemy unattackable to prevent multiple hits in quick succession
             player.stopAttackable();
 
             // Update enemy health
             player.updateHealth(this.attackValue);
 
-            // Enable player attack repetition after .6 seconds
+
+            // Enable attackable after .6 seconds
             this.scene.time.delayedCall(
                 600,
                 () => {
                     player.startAttackable();
+                    this.isAttacking = false;
                 },
                 [],
                 this

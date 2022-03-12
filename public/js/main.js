@@ -135,6 +135,7 @@ function create() {
                     monster.health = monsters[id].health;
                     monster.maxHealth = monsters[id].maxHealth;
                     monster.isDead = monsters[id].isDead;
+                    monster.isAttacking = monsters[id].isAttacking;
                 }
             });
         });

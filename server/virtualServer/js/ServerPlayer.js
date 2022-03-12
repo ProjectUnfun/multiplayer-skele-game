@@ -193,6 +193,15 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             // Update enemy health
             enemy.updateHealth(this.attackValue);
 
+            // Restore 2 user health on player kill
+            let enemyHealth = enemy.getHealth();
+            if (enemyHealth < 1) {
+                this.health += 2;
+                if (this.health > this.maxHealth) {
+                    this.health = this.maxHealth;
+                }
+            }
+
             // Enable player attack repetition after .6 seconds
             this.scene.time.delayedCall(
                 600,
@@ -214,10 +223,13 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             // Update enemy health
             enemy.updateHealth(this.attackValue);
 
-            // Update player health on monster kill
+            // Restore 1 user health on monster kill
             let enemyHealth = enemy.getHealth();
             if (enemyHealth < 1) {
                 this.health += 1;
+                if (this.health > this.maxHealth) {
+                    this.health = this.maxHealth;
+                }
             }
 
             // Enable player attack repitition on this target after .6 seconds
@@ -306,5 +318,10 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         let index = Math.floor(Math.random() * 9);
         let location = this.spawnLocations[index];
         return location;
+    }
+
+    // Method returns this player object's health
+    getHealth() {
+        return this.health;
     }
 }

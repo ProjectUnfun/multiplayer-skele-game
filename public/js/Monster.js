@@ -10,8 +10,11 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
         // Directions: down = 1, up = 2, left = 3, right = 4
         this.direction = 1;
 
-        // isMoving tracks player movement
+        // Track movement status
         this.isMoving = false;
+
+        // Track attack status
+        this.isAttacking = false;
 
         // Enable physics
         this.scene.physics.world.enable(this);
@@ -20,19 +23,20 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
         this.body.setSize(32, 32);
         this.body.setOffset(16, 22);
 
-        // Config health fields
+        // Track health and death status
         this.health = 3;
         this.maxHealth = 3;
         this.isDead = false;
 
-        // Create monster walk animations
-        this.createWalkAnimations()
+        // Create monster animations
+        this.createWalkAnimations();
+        this.createAttackAnimations();
 
         // Create health bar
         this.createHealthBar();
 
         // Set the default animation frame
-        this.setFrame(7);
+        this.setFrame(18);
 
         // Add the monster to the scene
         this.scene.add.existing(this);
@@ -44,17 +48,19 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
 
         // Handle movement animations & update health bar if monster is alive
         if (this.isDead === false) {
+            this.checkAttack();
             this.checkStill();
             this.checkMovement();
             this.updateHealthBar();
         } else {
+            // Stop all animations on death
             this.anims.stop();
         }
     }
 
     // Handle movement animations
     checkMovement() {
-        if (this.isMoving) {
+        if (this.isMoving && this.isAttacking === false) {
             if (this.direction === 1) {
                 this.anims.play("down", true);
             } else if (this.direction === 2) {
@@ -91,6 +97,22 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
                 this.anims.play("right", true);
                 this.anims.stop();
                 this.setFrame(27);
+            }
+        }
+    }
+
+    // Handle attack animations
+    checkAttack() {
+        if (this.isAttacking) {
+            // Check direction; play animation
+            if (this.direction === 1) {
+                this.anims.play("attackDown", true);
+            } else if (this.direction === 2) {
+                this.anims.play("attackUp", true);
+            } else if (this.direction === 3) {
+                this.anims.play("attackLeft", true);
+            } else if (this.direction === 4) {
+                this.anims.play("attackRight", true);
             }
         }
     }
@@ -137,6 +159,56 @@ class Monster extends Phaser.Physics.Arcade.Sprite {
                 end: 35,
             }),
             frameRate: rateOfFrames,
+            repeat: repeatValue,
+        });
+    }
+
+    // Method generates striking frames for monster attacking animations
+    createAttackAnimations() {
+        let rateOfFrames = 20;
+        let repeatValue = 0;
+
+        this.anims.create({
+            key: "attackUp",
+            frames: this.anims.generateFrameNumbers("monsterAttack", {
+                start: 0,
+                end: 5,
+            }),
+            frameRate: rateOfFrames,
+            yoyo: true,
+            repeat: repeatValue,
+        });
+
+        this.anims.create({
+            key: "attackLeft",
+            frames: this.anims.generateFrameNumbers("monsterAttack", {
+                start: 6,
+                end: 11,
+            }),
+            frameRate: rateOfFrames,
+            yoyo: true,
+            repeat: repeatValue,
+        });
+
+        this.anims.create({
+            key: "attackDown",
+            frames: this.anims.generateFrameNumbers("monsterAttack", {
+                start: 12,
+                end: 17,
+            }),
+            frameRate: rateOfFrames,
+            yoyo: true,
+            repeat: repeatValue,
+        });
+
+        this.anims.create({
+            key: "attackRight",
+            frames: this.anims.generateFrameNumbers("monsterAttack", {
+                start: 18,
+                end: 23,
+            }),
+            frameRate: rateOfFrames,
+            yoyo: true,
             repeat: repeatValue,
         });
     }
