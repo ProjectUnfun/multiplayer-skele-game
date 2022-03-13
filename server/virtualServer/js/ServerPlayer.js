@@ -63,6 +63,7 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
                     this.isDead = false;
                     this.respawnCalled = false;
                     this.canBeAttacked = true;
+                    this.deaths += 1;
                 },
                 [],
                 this
@@ -112,6 +113,9 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         // Track attackable state
         this.canBeAttacked = true;
 
+        // Track number of deaths
+        this.deaths = 0;
+
         // Track respawn functionality calls
         this.respawnCalled = false;
 
@@ -133,6 +137,9 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
 
         // Track attack status
         this.isAttacking = false;
+
+        // Track number of kills
+        this.kills = 0;
 
         // Create player hitbox physics body
         this.hitbox = this.scene.add.image(this.x, this.y, "attackBox", 0);
@@ -169,6 +176,11 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             // Update enemy health
             enemy.updateHealth(this.attackValue);
 
+            // Check for kill
+            if (enemy.getHealth() < 1) {
+                this.kills += 1;
+            }
+
             // Enable player attack repetition after .6 seconds
             this.scene.time.delayedCall(
                 600,
@@ -189,6 +201,11 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
 
             // Update enemy health
             enemy.updateHealth(this.attackValue);
+
+            // Check for kill
+            if (enemy.getHealth() < 1) {
+                this.kills += 1;
+            }
 
             // Enable player attack repitition on this target after .6 seconds
             this.scene.time.delayedCall(
@@ -302,5 +319,10 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         let index = Math.floor(Math.random() * 10);
         let location = spawnLocations[index];
         return location;
+    }
+
+    // Method returns health value
+    getHealth() {
+        return this.health;
     }
 }

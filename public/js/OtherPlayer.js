@@ -17,6 +17,10 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
         // Track attacking status
         this.isAttacking = false;
 
+        // Track kills and deaths
+        this.kills = 0;
+        this.deaths = 0;
+
         // Enable physics
         this.scene.physics.world.enable(this);
 

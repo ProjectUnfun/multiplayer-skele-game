@@ -16,6 +16,7 @@ var config = {
     scene: [
         LoginScene,
         GameScene,
+        ScoreScene,
     ],
 };
 

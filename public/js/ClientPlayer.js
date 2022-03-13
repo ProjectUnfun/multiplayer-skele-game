@@ -17,6 +17,10 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
         // Track attack status
         this.isAttacking = false;
 
+        // Track kills and deaths
+        this.kills = 0;
+        this.deaths = 0;
+
         // Enable physics
         this.scene.physics.world.enable(this);
 
@@ -59,6 +63,13 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
             this.checkIfPlayerIsMoving();
             this.updateHealthBar();
             this.updateNameText();
+
+            // Emit event for updating UI counters
+            this.scene.events.emit(
+                "updateScore",
+                this.kills,
+                this.deaths,
+            );
         } else {
             // Stop all animations on death
             this.anims.stop();

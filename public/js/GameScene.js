@@ -4,6 +4,10 @@ class GameScene extends Phaser.Scene {
     }
 
     init(data) {
+        // Run the Score scene in parallel with the game scene
+        this.scene.launch("Score");
+
+        // Store name passed from LoginScene
         this.playerName = data.name;
     }
 
@@ -125,6 +129,8 @@ class GameScene extends Phaser.Scene {
                         player.maxHealth = players[id].maxHealth;
                         player.isDead = players[id].isDead;
                         player.name = players[id].name;
+                        player.kills = players[id].kills;
+                        player.deaths = players[id].deaths;
                     }
                 });
             });

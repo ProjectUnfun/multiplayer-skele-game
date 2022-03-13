@@ -217,4 +217,9 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
         let location = spawnLocations[index];
         return location;
     }
+
+    // Method returns health value
+    getHealth() {
+        return this.health;
+    }
 }

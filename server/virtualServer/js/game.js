@@ -216,6 +216,8 @@ function update() {
         players[player.playerId].isMoving = player.isMoving;
         players[player.playerId].isAttacking = player.isAttacking;
         players[player.playerId].name = player.name;
+        players[player.playerId].kills = player.kills;
+        players[player.playerId].deaths = player.deaths;
     });
 
     // Update all monsters in physics group
@@ -296,6 +298,8 @@ function getPlayersObjects(self) {
             health: player.health,
             maxHealth: player.maxHealth,
             isDead: player.isDead,
+            kills: player.kills,
+            deaths: player.deaths,
         }
     });
     return playersObjects;
