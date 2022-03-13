@@ -43,6 +43,12 @@ function preload() {
         frameHeight: 64,
     });
 
+    // Load the potion sprite, the same image used on server side
+    this.load.spritesheet("potion", "assets/Potion.png", {
+        frameWidth: 32,
+        frameHeight: 32,
+    });
+
     // load tiled map info
     this.load.image("terrain_atlas", "assets/level/terrain_atlas_extruded.png");
     this.load.tilemapTiledJSON("map", "assets/level/IterativeMap4.json");
@@ -55,11 +61,10 @@ function create() {
     // Create the socket object for communitcation with server
     this.socket = io();
 
-    // Create a physics group for all players sent by server
+    // Create a physics group for all players, monsters, and potions sent by server
     this.players = this.physics.add.group();
-
-    // Create a physics group for all monsters sent by server
     this.monsters = this.physics.add.group();
+    this.potions = this.physics.add.group();
 
     this.map = new Map(
         this,
@@ -73,6 +78,7 @@ function create() {
     // Run the update method of all children objects of the groups
     this.players.runChildUpdate = true;
     this.monsters.runChildUpdate = true;
+    this.potions.runChildUpdate = true;
 
     // When the server sends the collection of connected players
     this.socket.on('currentPlayers', (players) => {
@@ -89,6 +95,13 @@ function create() {
     this.socket.on('currentMonsters', (monsters) => {
         Object.keys(monsters).forEach((id) => {
             addMonster(self, monsters[id], 'monsterWalk');
+        });
+    });
+
+    // When the server sends the collection of spawned potions
+    this.socket.on('currentPotions', (potions) => {
+        Object.keys(potions).forEach((id) => {
+            addPotion(self, potions[id], 'potion');
         });
     });
 
@@ -136,6 +149,18 @@ function create() {
                     monster.maxHealth = monsters[id].maxHealth;
                     monster.isDead = monsters[id].isDead;
                     monster.isAttacking = monsters[id].isAttacking;
+                }
+            });
+        });
+    });
+
+    // When the server sends potion data update event
+    this.socket.on('potionUpdates', (potions) => {
+        Object.keys(potions).forEach((id) => {
+            self.potions.getChildren().forEach((potion) => {
+                if (potions[id].potionId === potion.potionId) {
+                    potion.setPosition(potions[id].x, potions[id].y);
+                    potion.isActive = potions[id].isActive;
                 }
             });
         });
@@ -225,4 +250,10 @@ function addOtherPlayers(self, playerInfo, sprite) {
 function addMonster(self, monsterInfo, sprite) {
     const monster = new Monster(self, monsterInfo.x, monsterInfo.y, sprite, monsterInfo.monsterId);
     self.monsters.add(monster);
+}
+
+// Set up potions
+function addPotion(self, potionInfo, sprite) {
+    const potion = new Potion(self, potionInfo.x, potionInfo.y, sprite, potionInfo.potionId);
+    self.potions.add(potion);
 }
