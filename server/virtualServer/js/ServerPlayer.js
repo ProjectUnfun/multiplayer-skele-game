@@ -42,9 +42,6 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         // Check if player has died
         this.checkDeath();
 
-        // console.log(`Player X position = ${this.x}`);
-        // console.log(`Player Y position = ${this.y}`);
-
         // If player is alive, update normally
         if (this.isDead === false) {
             this.checkAttacking();
@@ -290,15 +287,9 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         }
     }
 
-    // Method simulates potion use
-    usePotion() {
-        this.health = this.maxHealth;
-        console.log(`Player: ${this.playerId} has used a Potion`);
-    }
-
     // Method returns new spawn location array
     getNewSpawn() {
-        let index = Math.floor(Math.random() * 10);
+        let index = Math.floor(Math.random() * 9);
         let location = spawnLocations[index];
         return location;
     }
