@@ -4,6 +4,9 @@ const players = {};
 // Collection of spawned monsters
 const monsters = {};
 
+// Collection of spawned potions
+const potions = {};
+
 // Field stores movement speed (original value = 160)
 const moveSpeed = 160;
 
@@ -13,17 +16,38 @@ let monsterIdNumber = 0;
 // Track number of monsters
 const numberOfMonsters = 7;
 
+// Track potion ID numbers
+let potionIdNumber = 0;
+
+// Track number of potions
+const numberOfPotions = 5;
+
+// Store potion locations
+const potionLocations = [
+    [480, 109],
+    [75, 835],
+    [944, 484],
+    [293, 532],
+    [1272, 938],
+    [1296, 100],
+    [891, 167],
+    [600, 957],
+    [869, 1063],
+    [1341, 474],
+]
+
 // Store spawn locations
 const spawnLocations = [
     [352, 480],
     [800, 608],
     [1280, 224],
-    [1248, 960],
+    [1200, 999],
     [640, 864],
     [128, 928],
     [1024, 96],
     [1056, 736],
     [96, 160],
+    [650, 253],
 ];
 
 // Phaser config object
@@ -54,6 +78,9 @@ function preload() {
     // Load a 32 x 32 image to be used as player hitbox physics body
     this.load.image('attackBox', 'assets/hitboxFrame.png');
 
+    // Load the potion sprite, the same image used on client side
+    this.load.image('potion', 'assets/Potion.png');
+
     // Load tiled map info for server side collision authentication with map blocked layer
     this.load.image("terrain_atlas", "assets/level/terrain_atlas.png");
     this.load.tilemapTiledJSON("map", "assets/level/IterativeMap4.json");
@@ -63,11 +90,10 @@ function create() {
     // Create a secondary reference to the current scene
     const self = this;
 
-    // Create a physics group for all connected players
+    // Create a physics group for all connected players, all spawned monsters, and all spawned potions
     this.players = this.physics.add.group();
-
-    // Create a physics group for all spawned monsters
     this.monsters = this.physics.add.group();
+    this.potions = this.physics.add.group();
 
     // Create map for blocked layer collision detection server side
     this.map = new Map(
@@ -79,10 +105,8 @@ function create() {
         "Deco1"
     );
 
-    // Add collisions for Players vs map blocked layer
+    // Add collisions for Players vs map blocked layer and Monsters vs map blocked layer
     this.physics.add.collider(this.players, this.map.blockedLayer);
-
-    // Add collisions for Monsters vs map blocked layer
     this.physics.add.collider(this.monsters, this.map.blockedLayer);
 
     // Spawn monsters based on numberOfMonsters variable set at the top of this file
@@ -95,6 +119,18 @@ function create() {
 
         // Increment the ID number for each monster spawned
         monsterIdNumber++;
+    }
+
+    // Spawn potions based on numberOfPotions variable set at the top of this file
+    for (let i = 0; i < numberOfPotions; i++) {
+        // Add new potion to the spawned potions collection
+        potions[potionIdNumber] = new ServerPotion(self, 0, 0, 'potion', potionIdNumber);
+
+        // Add new potion to physics group
+        addPotion(self, potions[potionIdNumber]);
+
+        // Increment the ID number for each potion spawned
+        potionIdNumber++;
     }
 
     // When a client connects to the server...
@@ -114,6 +150,9 @@ function create() {
 
         // Send an object containing the data of all spawned monsters
         socket.emit('currentMonsters', getMonstersObjects(self));
+
+        // Send an object containing the data of all spawned potions
+        socket.emit('currentPotions', getPotionsObjects(self));
 
         // Update all other connected clients by sending an object containing the new player data
         socket.broadcast.emit('newPlayer', getPlayersObjects(self)[socket.id]);
@@ -172,6 +211,9 @@ function update() {
 
     // Emit event to all clients with updated monster data
     io.emit('monsterUpdates', getMonstersObjects(this));
+
+    // Emit event to all client with updated potion data
+    io.emit('potionUpdates', getPotionsObjects(this));
 }
 
 // Assign the input received from a client to the appropriate server player
@@ -191,6 +233,11 @@ function addPlayer(self, player) {
 // Add given spawned monster to physics group
 function addMonster(self, monster) {
     self.monsters.add(monster);
+}
+
+// Add given spawned potion to physics group
+function addPotion(self, potion) {
+    self.potions.add(potion);
 }
 
 // Remove a disconnected player from the group of connected players
@@ -245,6 +292,20 @@ function getMonstersObjects(self) {
         }
     });
     return monstersObjects;
+}
+
+// Returns and object that stores the data of all spawned potions for sending to client
+function getPotionsObjects(self) {
+    const potionsObjects = {};
+    self.potions.getChildren().forEach((potion) => {
+        potionsObjects[potion.potionId] = {
+            x: potion.x,
+            y: potion.y,
+            potionId: potion.potionId,
+            isActive: potion.isActive,
+        }
+    });
+    return potionsObjects;
 }
 
 // Create game instance
