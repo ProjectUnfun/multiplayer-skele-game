@@ -1,11 +1,12 @@
 class ServerMonster extends Phaser.Physics.Arcade.Image {
-    constructor(scene, x, y, image, id) {
+    constructor(scene, x, y, image, id, name) {
         super(scene, x, y, image);
         this.scene = scene;
         this.x = x;
         this.y = y;
         this.image = image;
         this.monsterId = id;
+        this.name = name;
 
         // Directions: down = 1, up = 2, left = 3, right = 4
         this.direction = 1;
@@ -145,7 +146,7 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
     // Method updates monster health value when attacked
     updateHealth(damage) {
         this.health -= damage;
-        console.log(`Monster: ${this.monsterId} has been damaged`);
+        console.log(`Monster: ${this.name} has been damaged`);
     }
 
     // Method handles monster death

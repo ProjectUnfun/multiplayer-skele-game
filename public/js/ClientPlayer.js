@@ -1,11 +1,12 @@
 class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, images, id) {
+    constructor(scene, x, y, images, id, name) {
         super(scene, x, y, images);
         this.scene = scene;
         this.x = x;
         this.y = y;
         this.images = images;
         this.playerId = id;
+        this.name = name;
 
         // Directions: down = 1, up = 2, left = 3, right = 4
         this.direction = 1;
@@ -16,11 +17,6 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
         // Track attack status
         this.isAttacking = false;
 
-        // Track health and death status
-        this.health = 4;
-        this.maxHealth = 4;
-        this.isDead = false;
-
         // Enable physics
         this.scene.physics.world.enable(this);
 
@@ -28,12 +24,20 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
         this.body.setSize(32, 32);
         this.body.setOffset(16, 22);
 
+        // Track health and death status
+        this.health = 4;
+        this.maxHealth = 4;
+        this.isDead = false;
+
         // Create player animations
         this.createWalkAnimations();
         this.createAttackAnimations();
 
         // Create health bar
         this.createHealthBar();
+
+        // Create name text
+        this.createNameText();
 
         // Set the default animation frame
         this.setFrame(18);
@@ -54,6 +58,7 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
             this.checkIfPlayerIsStill();
             this.checkIfPlayerIsMoving();
             this.updateHealthBar();
+            this.updateNameText();
         } else {
             // Stop all animations on death
             this.anims.stop();
@@ -224,14 +229,31 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
     updateHealthBar() {
         this.healthBar.clear();
         this.healthBar.fillStyle(0xffffff, 1);
-        this.healthBar.fillRect(this.x - 24, this.y - 36, 48, 5);
+        this.healthBar.fillRect(this.x - 24, this.y - 32, 48, 5);
         this.healthBar.fillGradientStyle(0x00ff00, 0x00ff00, 4);
         this.healthBar.fillRect(
             this.x - 24,
-            this.y - 36,
+            this.y - 32,
             (48 * this.health) / this.maxHealth,
             5
         );
+    }
+
+    // Method creates the name text
+    createNameText() {
+        this.nameText = this.scene.add.text(this.x, this.y - 44, this.name,
+            {
+                fontFamily: 'Arial, Helvetica, sans-serif',
+                fontSize: 14,
+            }).setOrigin(0.5, 0.5);
+        this.updateNameText();
+    }
+
+    // Method updates the location of the name text
+    updateNameText() {
+        this.nameText.setFill("#FFFFFF");
+        this.nameText.setText(this.name);
+        this.nameText.setPosition(this.x, this.y - 44);
     }
 
     checkDeath() {
@@ -239,7 +261,7 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
             this.alpha = 0.5;
             this.healthBar.clear();
             this.healthBar.fillStyle(0xff0000, 1);
-            this.healthBar.fillRect(this.x - 24, this.y - 36, 48, 5);
+            this.healthBar.fillRect(this.x - 24, this.y - 32, 48, 5);
         } else if (this.alpha !== 1) {
             this.alpha = 1;
         }

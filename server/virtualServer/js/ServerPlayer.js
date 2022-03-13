@@ -6,6 +6,7 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         this.y = y;
         this.image = image;
         this.playerId = id;
+        this.name = name;
 
         // Directions: down = 1, up = 2, left = 3, right = 4
         this.direction = 1;
@@ -214,7 +215,7 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
     // Method updates the player health value when attacked
     updateHealth(damage) {
         this.health -= damage;
-        console.log(`Player: ${this.playerId} has been damaged`);
+        console.log(`Player: ${this.name} has been damaged`);
     }
 
     // Method makes hitbox active for monster overlap checking
@@ -293,7 +294,7 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
     // Method simulates potion use
     usePotion() {
         this.health = this.maxHealth;
-        console.log(`Player: ${this.playerId} has used a Potion`);
+        console.log(`Player: ${this.name} has used a Potion`);
     }
 
     // Method returns new spawn location array

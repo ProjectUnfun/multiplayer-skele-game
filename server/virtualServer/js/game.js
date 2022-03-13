@@ -50,6 +50,26 @@ const spawnLocations = [
     [650, 253],
 ];
 
+// Store bot names
+const monsterNames = [
+    "Medusa",
+    "Icarus",
+    "Heracles",
+    "Achilles",
+    "Paris",
+    "Sylvan",
+    "Athena",
+    "Zeus",
+    "Vulcan",
+    "Poseidon",
+    "Artemis",
+    "Hades",
+    "Styx",
+    "Persephone",
+    "Apollo",
+    "Daedalus"
+];
+
 // Phaser config object
 const config = {
     type: Phaser.HEADLESS,
@@ -112,7 +132,7 @@ function create() {
     // Spawn monsters based on numberOfMonsters variable set at the top of this file
     for (let i = 0; i < numberOfMonsters; i++) {
         // Add new monster to the spawned monsters collection
-        monsters[monsterIdNumber] = new ServerMonster(self, 0, 0, 'player', monsterIdNumber);
+        monsters[monsterIdNumber] = new ServerMonster(self, 0, 0, 'player', monsterIdNumber, monsterNames[i]);
 
         // Add new monster to the physics group
         addMonster(self, monsters[monsterIdNumber]);
@@ -135,7 +155,6 @@ function create() {
 
     // When a client connects to the server...
     io.on('connection', (socket) => {
-
         // Log the user ID in the server console
         console.log(`User: ${socket.id} has connected to the server`);
 
@@ -144,6 +163,11 @@ function create() {
 
         // Add new player to physics group
         addPlayer(self, players[socket.id]);
+
+        // Get player name input from client
+        socket.on('playerName', (data) => {
+            players[socket.id].name = data.name;
+        });
 
         // Send an object containing the data of all connected players
         socket.emit('currentPlayers', getPlayersObjects(self));
@@ -191,6 +215,7 @@ function update() {
         players[player.playerId].direction = player.direction;
         players[player.playerId].isMoving = player.isMoving;
         players[player.playerId].isAttacking = player.isAttacking;
+        players[player.playerId].name = player.name;
     });
 
     // Update all monsters in physics group
@@ -257,6 +282,7 @@ function getPlayersObjects(self) {
             x: player.x,
             y: player.y,
             playerId: player.playerId,
+            name: player.name,
             direction: player.direction,
             input: {
                 left: player.input.left,
@@ -283,6 +309,7 @@ function getMonstersObjects(self) {
             x: monster.x,
             y: monster.y,
             monsterId: monster.monsterId,
+            name: monster.name,
             direction: monster.direction,
             isMoving: monster.isMoving,
             health: monster.health,
