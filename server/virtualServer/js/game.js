@@ -5,13 +5,26 @@ const players = {};
 const monsters = {};
 
 // Field stores movement speed (original value = 160)
-const playerVelocity = 260;
+const moveSpeed = 160;
 
-// Field stores monster ID numbers
+// Track monster ID numbers
 let monsterIdNumber = 0;
 
 // Track number of monsters
 const numberOfMonsters = 7;
+
+// Store spawn locations
+const spawnLocations = [
+    [352, 480],
+    [800, 608],
+    [1280, 224],
+    [1248, 960],
+    [640, 864],
+    [128, 928],
+    [1024, 96],
+    [1056, 736],
+    [96, 160],
+];
 
 // Phaser config object
 const config = {
@@ -35,19 +48,19 @@ const config = {
 };
 
 function preload() {
-    // load a 64 x 64 image to correlate with the client side sprite
+    // Load a 64 x 64 image to correlate with the client side sprite size of 64 x 64
     this.load.image('player', 'assets/serverPlayer.png');
 
-    // load a 32 x 32 image to be used as player attack physics body
+    // Load a 32 x 32 image to be used as player hitbox physics body
     this.load.image('attackBox', 'assets/hitboxFrame.png');
 
-    // load tiled map info
+    // Load tiled map info for server side collision authentication with map blocked layer
     this.load.image("terrain_atlas", "assets/level/terrain_atlas.png");
     this.load.tilemapTiledJSON("map", "assets/level/IterativeMap4.json");
 }
 
 function create() {
-    // Create a secondary reference to the current scene ???
+    // Create a secondary reference to the current scene
     const self = this;
 
     // Create a physics group for all connected players
@@ -56,7 +69,7 @@ function create() {
     // Create a physics group for all spawned monsters
     this.monsters = this.physics.add.group();
 
-    // Create map for boundary collision detection server side
+    // Create map for blocked layer collision detection server side
     this.map = new Map(
         this,
         "map",
@@ -66,53 +79,61 @@ function create() {
         "Deco1"
     );
 
-    // Players vs map blocked layer
+    // Add collisions for Players vs map blocked layer
     this.physics.add.collider(this.players, this.map.blockedLayer);
 
-    // Monsters vs map blocked layer
+    // Add collisions for Monsters vs map blocked layer
     this.physics.add.collider(this.monsters, this.map.blockedLayer);
 
-    // Spawn monsters
+    // Spawn monsters based on numberOfMonsters variable set at the top of this file
     for (let i = 0; i < numberOfMonsters; i++) {
+        // Add new monster to the spawned monsters collection
         monsters[monsterIdNumber] = new ServerMonster(self, 0, 0, 'player', monsterIdNumber);
+
+        // Add new monster to the physics group
         addMonster(self, monsters[monsterIdNumber]);
+
+        // Increment the ID number for each monster spawned
         monsterIdNumber++;
     }
 
-    // When a client connects to the server
+    // When a client connects to the server...
     io.on('connection', (socket) => {
+
+        // Log the user ID in the server console
         console.log(`User: ${socket.id} has connected to the server`);
 
-        // create a new player object in the players group
+        // Add new player object to the collection of connected players
         players[socket.id] = new ServerPlayer(self, 0, 0, 'player', socket.id);
 
-        // add player to server
+        // Add new player to physics group
         addPlayer(self, players[socket.id]);
 
-        // send the players object to the new player
+        // Send an object containing the data of all connected players
         socket.emit('currentPlayers', getPlayersObjects(self));
 
-        // send the monsters object to the new player
+        // Send an object containing the data of all spawned monsters
         socket.emit('currentMonsters', getMonstersObjects(self));
 
-        // update all other players of the new player
+        // Update all other connected clients by sending an object containing the new player data
         socket.broadcast.emit('newPlayer', getPlayersObjects(self)[socket.id]);
 
-        // When a client disconnects from the server
+        // When a client disconnects from the server...
         socket.on('disconnect', () => {
+            // Log the user ID in the server console
             console.log(`User: ${socket.id} has disconnected from the server`);
 
-            // remove player from server
+            // Remove player from physics grou[]
             removePlayer(self, socket.id);
 
-            // remove this player from our players object
+            // Remove player from the collection of connected players
             delete players[socket.id];
 
-            // emit a message to all players to remove this player
+            // Update all connected clients of the disconnection of the player
             io.emit('disconnection', socket.id);
         });
 
-        // when a player moves, update the player data
+        // When a client sends it's input, update the server side player data accordingly
         socket.on('playerInput', (inputData) => {
             handlePlayerInput(self, socket.id, inputData);
         });
@@ -120,10 +141,12 @@ function create() {
 }
 
 function update() {
-    // Update all players
+    // Update all players in physics group
     this.players.getChildren().forEach((player) => {
+        // Call each player's update method
         players[player.playerId].update();
 
+        // Store the updated data in the corresponding object in the collection of connected players
         players[player.playerId].x = player.x;
         players[player.playerId].y = player.y;
         players[player.playerId].direction = player.direction;
@@ -131,10 +154,12 @@ function update() {
         players[player.playerId].isAttacking = player.isAttacking;
     });
 
-    // Update all monsters
+    // Update all monsters in physics group
     this.monsters.getChildren().forEach((monster) => {
+        // Call each monster's update method
         monsters[monster.monsterId].update();
 
+        // Store the updated data in the corresponding object in the collection of spawned monsters
         monsters[monster.monsterId].x = monster.x;
         monsters[monster.monsterId].y = monster.y;
         monsters[monster.monsterId].direction = monster.direction;
@@ -142,7 +167,7 @@ function update() {
         monsters[monster.monsterId].isAttacking = monster.isAttacking;
     });
 
-    // Emit event to all clients with update player data
+    // Emit event to all clients with updated player data
     io.emit('playerUpdates', getPlayersObjects(this));
 
     // Emit event to all clients with updated monster data
@@ -158,12 +183,12 @@ function handlePlayerInput(self, Id, input) {
     });
 }
 
-// Add a newly connected player to the group of connected players
+// Add given player to physics group
 function addPlayer(self, player) {
     self.players.add(player);
 }
 
-// Add a newly spawned monster to the group of spawned monsters
+// Add given spawned monster to physics group
 function addMonster(self, monster) {
     self.monsters.add(monster);
 }
@@ -177,9 +202,7 @@ function removePlayer(self, Id) {
     });
 }
 
-// TODO: Will need a removeMonster function when monster death is implemented
-
-// Returns an object that stores the server player data for sending to client
+// Returns an object that stores the data of all connected players for sending to client
 function getPlayersObjects(self) {
     const playersObjects = {};
     self.players.getChildren().forEach((player) => {
@@ -205,7 +228,7 @@ function getPlayersObjects(self) {
     return playersObjects;
 }
 
-// Returns an object that stores the server monster data for sending to client
+// Returns an object that stores the data of all spawned monsters for sending to client
 function getMonstersObjects(self) {
     const monstersObjects = {};
     self.monsters.getChildren().forEach((monster) => {
@@ -224,5 +247,6 @@ function getMonstersObjects(self) {
     return monstersObjects;
 }
 
+// Create game instance
 const game = new Phaser.Game(config);
 window.gameLoaded();

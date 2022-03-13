@@ -13,6 +13,9 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
         // Track movement status
         this.isMoving = false;
 
+        // Track attacking status
+        this.isAttacking = false;
+
         // Enable physics
         this.scene.physics.world.enable(this);
 

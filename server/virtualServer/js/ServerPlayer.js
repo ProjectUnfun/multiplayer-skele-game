@@ -10,36 +10,15 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         // Directions: down = 1, up = 2, left = 3, right = 4
         this.direction = 1;
 
-        // spawn locations array
-        this.spawnLocations = [
-            [352, 480],
-            [800, 608],
-            [1280, 224],
-            [1248, 960],
-            [640, 864],
-            [128, 928],
-            [1024, 96],
-            [1056, 736],
-            [96, 160],
-        ];
-
+        // Set default random spawning location
         this.spawnLocation = this.getNewSpawn();
         this.x = this.spawnLocation[0];
         this.y = this.spawnLocation[1];
 
-        // Track when player is moving
+        // Track movement status
         this.isMoving = false;
 
-        // Track when player is attacking
-        this.isAttacking = false;
-
-        // Track when player has been killed
-        this.isDead = false;
-
-        // Track if player respawn call has happened
-        this.respawnCalled = false;
-
-        // Input tracking fields
+        // Input tracking object
         this.input = {
             left: false,
             right: false,
@@ -51,10 +30,8 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         // Enable physics
         this.scene.physics.world.enable(this);
 
-        // Config attack
+        // Config player
         this.configPlayerAttack();
-
-        // Config damages
         this.configPlayerDamage();
 
         // Add player to scene
@@ -90,25 +67,25 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         }
     }
 
+    // Method handles player input based on input data sent from client
     checkMovement() {
-        // Calculate player position based on player input passed from client
         if (this.input.left) {
-            this.body.setVelocityX(-playerVelocity);
+            this.body.setVelocityX(-moveSpeed);
             this.body.setVelocityY(0);
             this.isMoving = true;
             this.direction = 3;
         } else if (this.input.right) {
-            this.body.setVelocityX(playerVelocity);
+            this.body.setVelocityX(moveSpeed);
             this.body.setVelocityY(0);
             this.isMoving = true;
             this.direction = 4;
         } else if (this.input.up) {
-            this.body.setVelocityY(-playerVelocity);
+            this.body.setVelocityY(-moveSpeed);
             this.body.setVelocityX(0);
             this.isMoving = true;
             this.direction = 2;
         } else if (this.input.down) {
-            this.body.setVelocityY(playerVelocity);
+            this.body.setVelocityY(moveSpeed);
             this.body.setVelocityX(0);
             this.isMoving = true;
             this.direction = 1;
@@ -121,31 +98,22 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
 
     // Method configs player damage taking fields
     configPlayerDamage() {
+        // Config physics body
         this.body.setSize(32, 32);
         this.body.setOffset(16, 22);
+
+        // Track death status
+        this.isDead = false;
+
+        // Track attackable state
         this.canBeAttacked = true;
 
-        // Player hitpoints tracking fields
-        this.health = 4;
-        this.maxHealth = 4;
-    }
+        // Track respawn functionality calls
+        this.respawnCalled = false;
 
-    // Method make hitbox active for monster overlap checking
-    makeHitboxActive() {
-        // Set hitbox to active
-        this.hitbox.setActive(true);
-
-        // Activate hitbox overlap checking
-        this.hitbox.body.onOverlap = true;
-    }
-
-    // Method makes hitbox inactive to prevent monster overlap checking
-    makeHitboxInactive() {
-        // Set hitbox to inactive
-        this.hitbox.setActive(false);
-
-        // Deactivate hitbox overlap checking
-        this.hitbox.body.onOverlap = false;
+        // Health (Hit Points, HP) values
+        this.health = 10;
+        this.maxHealth = 10;
     }
 
     // Method configs defaults for player attacks
@@ -156,8 +124,11 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             y: 0,
         };
 
-        // Player attack power value
+        // Attack power value
         this.attackValue = 1;
+
+        // Track attack status
+        this.isAttacking = false;
 
         // Create player hitbox physics body
         this.hitbox = this.scene.add.image(this.x, this.y, "attackBox", 0);
@@ -175,7 +146,7 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             this
         );
 
-        // Player hitbox overlap for player vs monsters
+        // Player hitbox vs monsters for overlap method call
         this.scene.physics.add.overlap(
             this.hitbox,
             this.scene.monsters,
@@ -193,15 +164,6 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
 
             // Update enemy health
             enemy.updateHealth(this.attackValue);
-
-            // Restore 2 user health on player kill
-            let enemyHealth = enemy.getHealth();
-            if (enemyHealth < 1) {
-                this.health += 2;
-                if (this.health > this.maxHealth) {
-                    this.health = this.maxHealth;
-                }
-            }
 
             // Enable player attack repetition after .6 seconds
             this.scene.time.delayedCall(
@@ -224,15 +186,6 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             // Update enemy health
             enemy.updateHealth(this.attackValue);
 
-            // Restore 1 user health on monster kill
-            let enemyHealth = enemy.getHealth();
-            if (enemyHealth < 1) {
-                this.health += 1;
-                if (this.health > this.maxHealth) {
-                    this.health = this.maxHealth;
-                }
-            }
-
             // Enable player attack repitition on this target after .6 seconds
             this.scene.time.delayedCall(
                 600,
@@ -245,10 +198,12 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         }
     }
 
+    // Method alters flag that determines whether this object is a valid target
     stopAttackable() {
         this.canBeAttacked = false;
     }
 
+    // Method alters flag that determines whether this object is a valid target
     startAttackable() {
         this.canBeAttacked = true;
     }
@@ -259,9 +214,27 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         console.log(`Player: ${this.playerId} has been damaged`);
     }
 
-    // Method checks is player is pressing attack key and handles hitboxing
+    // Method makes hitbox active for monster overlap checking
+    makeHitboxActive() {
+        // Set hitbox to active
+        this.hitbox.setActive(true);
+
+        // Activate hitbox overlap checking
+        this.hitbox.body.onOverlap = true;
+    }
+
+    // Method makes hitbox inactive to prevent monster overlap checking
+    makeHitboxInactive() {
+        // Set hitbox to inactive
+        this.hitbox.setActive(false);
+
+        // Deactivate hitbox overlap checking
+        this.hitbox.body.onOverlap = false;
+    }
+
+    // Method checks if player has pressing attack key and handles hitboxing
     checkAttacking() {
-        // If the space key is pressed and the player is not already attacking
+        // If space key input is passed and player is not already attacking
         if (this.input.space && this.isAttacking === false) {
             // Stop movement, alter attacking flag
             this.body.setVelocity(0);
@@ -295,7 +268,6 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             this.scene.time.delayedCall(
                 300,
                 () => {
-                    // Reset flag & deactivate hitbox
                     this.makeHitboxInactive();
                     this.isAttacking = false;
                 },
@@ -318,12 +290,7 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
     // Method returns new spawn location array
     getNewSpawn() {
         let index = Math.floor(Math.random() * 9);
-        let location = this.spawnLocations[index];
+        let location = spawnLocations[index];
         return location;
-    }
-
-    // Method returns this player object's health
-    getHealth() {
-        return this.health;
     }
 }
