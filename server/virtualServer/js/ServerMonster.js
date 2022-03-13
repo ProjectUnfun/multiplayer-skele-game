@@ -83,8 +83,8 @@ class ServerMonster extends Phaser.Physics.Arcade.Image {
         this.respawnCalled = false;
 
         // Health (Hit Points, HP) values
-        this.health = 5;
-        this.maxHealth = 5;
+        this.health = 2;
+        this.maxHealth = 2;
     }
 
     // Method configs damage dealing

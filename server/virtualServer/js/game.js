@@ -8,13 +8,13 @@ const monsters = {};
 const potions = {};
 
 // Field stores movement speed (original value = 160)
-const moveSpeed = 160;
+const moveSpeed = 180;
 
 // Track monster ID numbers
 let monsterIdNumber = 0;
 
 // Track number of monsters
-const numberOfMonsters = 7;
+const numberOfMonsters = 9;
 
 // Track potion ID numbers
 let potionIdNumber = 0;

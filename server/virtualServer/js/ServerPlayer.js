@@ -115,8 +115,8 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
         this.respawnCalled = false;
 
         // Health (Hit Points, HP) values
-        this.health = 10;
-        this.maxHealth = 10;
+        this.health = 5;
+        this.maxHealth = 5;
     }
 
     // Method configs defaults for player attacks
