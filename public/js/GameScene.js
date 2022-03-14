@@ -11,40 +11,7 @@ class GameScene extends Phaser.Scene {
         this.playerName = data.name;
     }
 
-    preload() {
-        // Load player movement spritesheet
-        this.load.spritesheet("playerWalk", "/assets/WalkLPC.png", {
-            frameWidth: 64,
-            frameHeight: 64,
-        });
-
-        this.load.spritesheet("playerAttack", "assets/HammerLPC.png", {
-            frameWidth: 64,
-            frameHeight: 64,
-        });
-
-        // Load opponent movement spritesheet
-        this.load.spritesheet("monsterWalk", "assets/SkeleWalk.png", {
-            frameWidth: 64,
-            frameHeight: 64,
-        });
-
-        // Load opponent attack spritesheet
-        this.load.spritesheet("monsterAttack", "assets/SkeleAttack.png", {
-            frameWidth: 64,
-            frameHeight: 64,
-        });
-
-        // Load the potion sprite, the same image used on server side
-        this.load.spritesheet("potion", "assets/Potion.png", {
-            frameWidth: 32,
-            frameHeight: 32,
-        });
-
-        // load tiled map info
-        this.load.image("terrain_atlas", "assets/level/terrain_atlas_extruded.png");
-        this.load.tilemapTiledJSON("map", "assets/level/IterativeMap4.json");
-    }
+    preload() { }
 
     create() {
         // Create a secondary reference to the current scene ???
@@ -60,6 +27,9 @@ class GameScene extends Phaser.Scene {
         this.players = this.physics.add.group();
         this.monsters = this.physics.add.group();
         this.potions = this.physics.add.group();
+
+        // Create audio clips
+        this.createAudio();
 
         // Create tiled map
         this.map = new Map(
@@ -111,6 +81,7 @@ class GameScene extends Phaser.Scene {
             self.players.getChildren().forEach((player) => {
                 if (Id === player.playerId) {
                     player.healthBar.destroy();
+                    player.nameText.destroy();
                     player.destroy();
                 }
             });
@@ -232,6 +203,34 @@ class GameScene extends Phaser.Scene {
                 space: this.spaceKeyPressed
             });
         }
+    }
+
+    // Method creates the audio clips
+    createAudio() {
+        this.monsterDeathAudio = this.sound.add("enemyDeath", {
+            loop: false,
+            volume: 0.5,
+        });
+
+        this.playerAttackAudio = this.sound.add("playerAttack", {
+            loop: false,
+            volume: 0.8,
+        });
+
+        this.monsterDamagedAudio = this.sound.add("monsterDamaged", {
+            loop: false,
+            volume: 1.0,
+        });
+
+        this.playerDamagedAudio = this.sound.add("playerDamaged", {
+            loop: false,
+            volume: 1.6,
+        });
+
+        this.monsterAttackAudio = this.sound.add("monsterAttack", {
+            loop: false,
+            volume: 1.1,
+        });
     }
 
     // Set up the user player

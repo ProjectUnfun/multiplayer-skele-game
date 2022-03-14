@@ -16,6 +16,7 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
 
         // Track attacking status
         this.isAttacking = false;
+        this.attackAudioPlayed = false;
 
         // Track kills and deaths
         this.kills = 0;
@@ -31,7 +32,9 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
         // Track health and death status
         this.health = 4;
         this.maxHealth = 4;
+        this.oldHealth = this.health;
         this.isDead = false;
+        this.deathAudioPlayed = false;
 
         // Create animations
         this.createWalkAnimations();
@@ -51,6 +54,10 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
+        if (this.oldHealth > this.health) {
+            this.scene.monsterDamagedAudio.play();
+        }
+
         this.checkDeath();
 
         // If player is alive, run update methods
@@ -59,11 +66,13 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
             this.checkStill();
             this.checkMovement();
             this.updateHealthBar();
-            this.updateNameText();
         } else {
             // Stop all animations on death
             this.anims.stop();
         }
+
+        this.updateNameText();
+        this.oldHealth = this.health;
     }
 
     // Method generates movement frames for monster walking animations
@@ -208,6 +217,20 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
     // Handle attack animations
     checkAttack() {
         if (this.isAttacking) {
+            if (this.attackAudioPlayed === false) {
+                this.scene.monsterAttackAudio.play();
+                this.attackAudioPlayed = true;
+
+                this.scene.time.delayedCall(
+                    600,
+                    () => {
+                        this.attackAudioPlayed = false;
+                    },
+                    [],
+                    this
+                );
+            }
+
             // Check direction; play animation
             if (this.direction === 1) {
                 this.anims.play("attackDown", true);
@@ -264,6 +287,20 @@ class OtherPlayer extends Phaser.Physics.Arcade.Sprite {
             this.healthBar.clear();
             this.healthBar.fillStyle(0xff0000, 1);
             this.healthBar.fillRect(this.x - 24, this.y - 27, 48, 5);
+
+            if (this.deathAudioPlayed === false) {
+                this.scene.monsterDeathAudio.play();
+                this.deathAudioPlayed = true;
+
+                this.scene.time.delayedCall(
+                    5000,
+                    () => {
+                        this.attackAudioPlayed = false;
+                    },
+                    [],
+                    this
+                );
+            }
         } else if (this.alpha !== 1) {
             this.alpha = 1;
         }

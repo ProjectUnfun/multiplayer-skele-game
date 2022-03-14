@@ -8,11 +8,7 @@ class ScoreScene extends Phaser.Scene {
         this.gameScene = this.scene.get("Game");
     }
 
-    preload() {
-        // Icons for UI
-        this.load.image("killsIcon", "assets/HammerIcon.png");
-        this.load.image("deathsIcon", "assets/Troll_Icon.png");
-    }
+    preload() { }
 
     create() {
         // Setup methods

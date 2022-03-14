@@ -264,15 +264,15 @@ class ServerPlayer extends Phaser.Physics.Arcade.Image {
             // Check direction & assign hitbox coord values
             if (this.direction === 1) {
                 this.hitboxLocation.x = this.x;
-                this.hitboxLocation.y = this.y + 24;
+                this.hitboxLocation.y = this.y + 32;
             } else if (this.direction === 2) {
                 this.hitboxLocation.x = this.x;
-                this.hitboxLocation.y = this.y - 16;
+                this.hitboxLocation.y = this.y - 24;
             } else if (this.direction === 3) {
-                this.hitboxLocation.x = this.x - 16;
+                this.hitboxLocation.x = this.x - 24;
                 this.hitboxLocation.y = this.y + 6;
             } else if (this.direction === 4) {
-                this.hitboxLocation.x = this.x + 16;
+                this.hitboxLocation.x = this.x + 24;
                 this.hitboxLocation.y = this.y + 6;
             }
 

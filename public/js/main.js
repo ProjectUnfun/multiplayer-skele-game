@@ -14,6 +14,7 @@ var config = {
         createContainer: true
     },
     scene: [
+        BootScene,
         LoginScene,
         GameScene,
         ScoreScene,

@@ -16,6 +16,7 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
 
         // Track attack status
         this.isAttacking = false;
+        this.attackAudioPlayed = false;
 
         // Track kills and deaths
         this.kills = 0;
@@ -31,6 +32,7 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
         // Track health and death status
         this.health = 4;
         this.maxHealth = 4;
+        this.oldHealth = this.health;
         this.isDead = false;
 
         // Create player animations
@@ -58,11 +60,14 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
 
         // If player is alive, run update methods
         if (this.isDead === false) {
+            if (this.oldHealth > this.health) {
+                this.scene.playerDamagedAudio.play();
+            }
+
             this.checkIfPlayerIsAttacking();
             this.checkIfPlayerIsStill();
             this.checkIfPlayerIsMoving();
             this.updateHealthBar();
-            this.updateNameText();
 
             // Emit event for updating UI counters
             this.scene.events.emit(
@@ -74,6 +79,9 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
             // Stop all animations on death
             this.anims.stop();
         }
+
+        this.updateNameText();
+        this.oldHealth = this.health;
     }
 
     // Method generates movement frames for player walking animations
@@ -217,7 +225,21 @@ class ClientPlayer extends Phaser.Physics.Arcade.Sprite {
 
     checkIfPlayerIsAttacking() {
         if (this.isAttacking) {
-            // Check direction; play animation
+            if (this.attackAudioPlayed === false) {
+                this.scene.playerAttackAudio.play();
+                this.attackAudioPlayed = true;
+
+                this.scene.time.delayedCall(
+                    600,
+                    () => {
+                        this.attackAudioPlayed = false;
+                    },
+                    [],
+                    this
+                );
+            }
+
+            // Play appropriate animation
             if (this.direction === 1) {
                 this.anims.play("attackDown", true);
             } else if (this.direction === 2) {
