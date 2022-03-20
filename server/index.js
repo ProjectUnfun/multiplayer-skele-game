@@ -13,6 +13,11 @@ const parser = new DatauriParser();
 
 const { JSDOM } = jsdom;
 
+let port = process.env.PORT;
+if (port == null || port == "") {
+    port = 8081;
+}
+
 // Setup static directory to serve client files from
 app.use(express.static('public', { root: __dirname + "/../" }));
 
@@ -43,7 +48,7 @@ function setupVirtualServer() {
             // Pass the socket io object to the virtual DOM
             dom.window.io = io;
             // Start server
-            server.listen(8081, function () {
+            server.listen(port, function () {
                 console.log("Server started...")
                 console.log(`Server now listening for connections on port: ${server.address().port}`);
             });
