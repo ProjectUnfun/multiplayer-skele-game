@@ -14,15 +14,28 @@ class LoginScene extends Phaser.Scene {
 
         this.gotTheName = false;
 
-        this.gameName = this.add.text(395, 125, "Multiplayer\nSkele Game", {
-            color: "#00FF00",
-            fontSize: 72,
-            fontStyle: "bold"
+        // Display the background image
+        this.backgroundImage = this.add.image(0, 0, "skeleBG");
+        this.backgroundImage.setOrigin(0);
+
+        // Display Title Text
+        this.gameName = this.add.text(390, 110, "Legio Mortis\n     Online", {
+            color: "#DFDFDF",
+            fontSize: 96,
+            fontFamily: "Lucifer",
         }).setOrigin(0.5);
 
-        this.message = this.add.text(395, 250, "Enter your name:", {
-            color: "#FFFFFF",
-            fontSize: 60,
+        // Display instruction text
+        this.message = this.add.text(395, 290, "Enter your name:", {
+            color: "#DFDFDF",
+            fontSize: 48,
+            fontFamily: "Lucifer",
+        }).setOrigin(0.5);
+
+        // Display credits text
+        this.unfun = this.add.text(390, 520, "Credits for art:\nStephen Challener, Johannes Sjölund, David Conway Jr.,\nCarlo Enrico Victoria,bluecarrot16, Michael Whitlock,\nMatthew Krohn, Thane Brimhall, laetissima, Joe White,\nNila122, DarkwallLKE, Tuomo Untinen, Daniel Eddeland,\ngr3yh47, Yamilian, ElizaWy, Dr. Jamgo, Casper Nilsson,\nJohann CHARLOT, Skyler Robert Colladay, Lanea Zimmerman,\nCharles Sanchez, Manuel Riecke, Daniel Armstrong\n\nCredits for music:\nbensound.com", {
+            color: "#DFDFDF",
+            fontSize: 12,
             fontStyle: "bold"
         }).setOrigin(0.5);
 

@@ -52,22 +52,22 @@ const spawnLocations = [
 
 // Store bot names
 const monsterNames = [
-    "Medusa",
-    "Icarus",
-    "Heracles",
-    "Achilles",
-    "Paris",
-    "Sylvan",
-    "Athena",
-    "Zeus",
-    "Vulcan",
-    "Poseidon",
-    "Artemis",
-    "Hades",
-    "Styx",
-    "Persephone",
-    "Apollo",
-    "Daedalus"
+    "Bot1",
+    "Bot2",
+    "Bot3",
+    "Bot4",
+    "Bot5",
+    "Bot6",
+    "Bot7",
+    "Bot8",
+    "Bot9",
+    "Bot10",
+    "Bot11",
+    "Bot12",
+    "Bot13",
+    "Bot14",
+    "Bot15",
+    "Bot16"
 ];
 
 // Phaser config object
@@ -169,16 +169,16 @@ function create() {
             players[socket.id].name = data.name;
         });
 
-        // Send an object containing the data of all connected players
+        // Send all connected players
         socket.emit('currentPlayers', getPlayersObjects(self));
 
-        // Send an object containing the data of all spawned monsters
+        // Send all spawned monsters
         socket.emit('currentMonsters', getMonstersObjects(self));
 
-        // Send an object containing the data of all spawned potions
+        // Send all spawned potions
         socket.emit('currentPotions', getPotionsObjects(self));
 
-        // Update all other connected clients by sending an object containing the new player data
+        // Update all other connected clients with the new player data
         socket.broadcast.emit('newPlayer', getPlayersObjects(self)[socket.id]);
 
         // When a client disconnects from the server...
@@ -233,13 +233,13 @@ function update() {
         monsters[monster.monsterId].isAttacking = monster.isAttacking;
     });
 
-    // Emit event to all clients with updated player data
+    // Send all clients updated player data
     io.emit('playerUpdates', getPlayersObjects(this));
 
-    // Emit event to all clients with updated monster data
+    // Send all clients updated monster data
     io.emit('monsterUpdates', getMonstersObjects(this));
 
-    // Emit event to all client with updated potion data
+    // Send all clients updated potion data
     io.emit('potionUpdates', getPotionsObjects(this));
 }
 
@@ -276,7 +276,7 @@ function removePlayer(self, Id) {
     });
 }
 
-// Returns an object that stores the data of all connected players for sending to client
+// Returns an object with the data of all connected players for sending to client
 function getPlayersObjects(self) {
     const playersObjects = {};
     self.players.getChildren().forEach((player) => {
@@ -305,7 +305,7 @@ function getPlayersObjects(self) {
     return playersObjects;
 }
 
-// Returns an object that stores the data of all spawned monsters for sending to client
+// Returns an object with the data of all spawned monsters for sending to client
 function getMonstersObjects(self) {
     const monstersObjects = {};
     self.monsters.getChildren().forEach((monster) => {
@@ -325,7 +325,7 @@ function getMonstersObjects(self) {
     return monstersObjects;
 }
 
-// Returns and object that stores the data of all spawned potions for sending to client
+// Returns an object with the data of all spawned potions for sending to client
 function getPotionsObjects(self) {
     const potionsObjects = {};
     self.potions.getChildren().forEach((potion) => {
