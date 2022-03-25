@@ -24,8 +24,8 @@ class BootScene extends Phaser.Scene {
 
     loadImages() {
         // Icons for UI
-        this.load.image("killsIcon", "assets/images/HammerIcon.png");
-        this.load.image("deathsIcon", "assets/images/Troll_Icon.png");
+        this.load.image("swordIcon", "assets/images/iconSword.png");
+        this.load.image("skullIcon", "assets/images/iconSkull.png");
 
         // Background image
         this.load.image("skeleBG", "assets/images/skullBG.png");

@@ -14,13 +14,13 @@ const moveSpeed = 180;
 let monsterIdNumber = 0;
 
 // Track number of monsters
-const numberOfMonsters = 9;
+const numberOfMonsters = 7;
 
 // Track potion ID numbers
 let potionIdNumber = 0;
 
 // Track number of potions
-const numberOfPotions = 5;
+const numberOfPotions = 4;
 
 // Store potion locations
 const potionLocations = [

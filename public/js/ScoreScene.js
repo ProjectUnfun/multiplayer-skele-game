@@ -19,24 +19,27 @@ class ScoreScene extends Phaser.Scene {
     // Method creates the counter text and icon
     setupUiElements() {
         // Create kills text
-        this.killsText = this.add.text(250, 9, "Kills: 0", {
+        this.killsText = this.add.text(250, 5, "Kills: 0", {
             fontSize: "24px",
             fontStyle: "bold",
+            fontFamily: "Lucifer",
             fill: "#fff",
         });
 
         // Create deaths text
-        this.deathsText = this.add.text(450, 9, "Deaths: 0", {
+        this.deathsText = this.add.text(450, 5, "Deaths: 0", {
             fontSize: "24px",
             fontStyle: "bold",
+            fontFamily: "Lucifer",
             fill: "#fff",
         });
 
         // Create kills icon
-        this.killsIcon = this.add.image(230, 20, "killsIcon");
+        this.killsIcon = this.add.image(230, 20, "swordIcon");
+        this.killsIcon.setScale(1.2);
 
         // Create deaths icon
-        this.deathsIcon = this.add.image(430, 20, "deathsIcon");
+        this.deathsIcon = this.add.image(430, 20, "skullIcon");
     }
 
     // Method creates the event listener for counter updates
