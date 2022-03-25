@@ -38,6 +38,7 @@ class BootScene extends Phaser.Scene {
         this.load.audio("monsterDamaged", ["assets/audio/MonsterDamaged.wav"]);
         this.load.audio("playerDamaged", ["assets/audio/PlayerDamaged.wav"]);
         this.load.audio("monsterAttack", ["assets/audio/MonsterAttack.wav"]);
+        this.load.audio("bgTrack", ["assets/audio/epic.mp3"]);
     }
 
     loadTilesAndMap() {

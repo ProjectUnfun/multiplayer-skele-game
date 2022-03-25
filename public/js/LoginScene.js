@@ -48,6 +48,15 @@ class LoginScene extends Phaser.Scene {
                 this.gotTheName = true;
             }
         });
+
+        // Background music
+        this.gameMusicAudio = this.sound.add("bgTrack", {
+            loop: true,
+            volume: 0.1,
+        });
+
+        // Play the background music
+        this.gameMusicAudio.play();
     }
 
     update() {
